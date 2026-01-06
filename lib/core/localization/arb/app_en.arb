@@ -1,0 +1,198 @@
+{
+  "@@locale": "en",
+  "appName": "VelPas",
+  "tagline": "Ride. Track. Replace on time.",
+  "aboutDescription": "VelPas is a cycling community app that helps you track bike component mileage, replacements, and your cycling wardrobe. Offline-first, built for reliable maintenance habits and clean gear inventory.",
+
+  "homeTitle": "Home",
+  "garageTitle": "Garage",
+  "wardrobeTitle": "Wardrobe",
+  "insightsTitle": "Insights",
+  "settingsTitle": "Settings",
+  "settingsTab": "Settings",
+
+  "lastSyncTitle": "Last sync",
+  "lastSyncNever": "Never synced",
+  "addReplacement": "Add replacement",
+  "syncStrava": "Sync Strava",
+  "yourBikes": "Your bikes",
+  "emptyGarageTitle": "No bikes yet",
+  "emptyGarageSubtitle": "Add your first bike to start tracking components.",
+  "addBike": "Add bike",
+  "totalKmLabel": "{km} km total",
+  "@totalKmLabel": {
+    "placeholders": {"km": {}}
+  },
+  "noComponentsYet": "No components yet",
+  "topAlertLabel": "Top alert: {brand} {model} • {wearPercent}%",
+  "@topAlertLabel": {
+    "placeholders": {"brand": {}, "model": {}, "wearPercent": {}}
+  },
+  "statusOk": "OK",
+  "statusWatch": "Watch",
+  "statusReplace": "Replace soon",
+  "statusReplaceNow": "Replace now",
+  "selectBike": "Select bike",
+  "selectComponent": "Select component",
+  "syncSuccess": "Imported {added} rides • {summary}",
+  "@syncSuccess": {
+    "placeholders": {"added": {}, "summary": {}}
+  },
+
+  "bikeDetailTitle": "Bike detail",
+  "bikeNotFound": "Bike not found",
+  "componentsTitle": "Components",
+  "addComponent": "Add component",
+  "categoryDrivetrain": "Drivetrain",
+  "categoryWheelsTires": "Wheels & Tires",
+  "categoryBrakes": "Brakes",
+  "categoryCockpit": "Cockpit",
+  "categoryOther": "Other",
+  "kmSinceInstall": "{km} km since install • {expected} km life",
+  "@kmSinceInstall": {
+    "placeholders": {"km": {}, "expected": {}}
+  },
+  "purchasePriceLabel": "Purchase price: {price}",
+  "@purchasePriceLabel": {
+    "placeholders": {"price": {}}
+  },
+  "componentType": "Component type",
+  "componentTypeChain": "Chain",
+  "componentTypeCassette": "Cassette",
+  "componentTypeChainring": "Chainring",
+  "componentTypePowerMeter": "Power meter",
+  "componentTypeShifters": "Shifters",
+  "componentTypeRearDerailleur": "Rear derailleur",
+  "componentTypeFrontDerailleur": "Front derailleur",
+  "componentTypeWheels": "Wheels",
+  "componentTypeTires": "Tires",
+  "componentTypeBrakes": "Brakes",
+  "componentTypeCockpit": "Cockpit",
+  "componentTypeOther": "Other",
+  "brandLabel": "Brand",
+  "modelLabel": "Model",
+  "expectedLifeLabel": "Expected life (km)",
+  "priceOptionalLabel": "Price (optional)",
+  "saveLabel": "Save",
+  "installedAtKm": "Installed at {km} km",
+  "@installedAtKm": {
+    "placeholders": {"km": {}}
+  },
+
+  "editBike": "Edit bike",
+  "bikeNameLabel": "Bike name",
+  "requiredField": "Required",
+  "purchasePriceOptional": "Purchase price (optional)",
+  "deleteBike": "Delete bike",
+  "bikePhotoLabel": "Bike photo",
+  "pickPhoto": "Tap to pick a photo",
+  "photoPickerUnavailable": "Photo picker is not available on this platform.",
+
+  "componentDetailTitle": "Component detail",
+  "componentNotFound": "Component not found",
+  "replaceComponent": "Replace component",
+  "replacementHistory": "Replacement history",
+  "noHistory": "No replacement history yet",
+  "removedAtKm": "Removed at {km} km",
+  "@removedAtKm": {
+    "placeholders": {"km": {}}
+  },
+
+  "removalKmLabel": "Removal odometer",
+  "currentBikeKmLabel": "Current bike km: {km}",
+  "@currentBikeKmLabel": {
+    "placeholders": {"km": {}}
+  },
+  "newComponentTitle": "New component",
+
+  "wardrobeTitle": "Wardrobe",
+  "totalGearValue": "Total gear value",
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "placeholders": {"count": {}}
+  },
+  "categoryHelmets": "Helmets",
+  "categoryGlasses": "Glasses",
+  "categoryJerseys": "Jerseys",
+  "categoryBibs": "Bibs",
+  "categoryShoes": "Shoes",
+  "categoryGloves": "Gloves",
+  "categoryJackets": "Jackets",
+  "categoryAccessories": "Accessories",
+  "emptyWardrobeCategory": "No items yet",
+  "itemQuantity": "Qty {quantity}",
+  "@itemQuantity": {
+    "placeholders": {"quantity": {}}
+  },
+  "addItem": "Add item",
+  "editItem": "Edit item",
+  "quantityLabel": "Quantity",
+  "notesLabel": "Notes",
+  "deleteItem": "Delete item",
+
+  "totalBikeValue": "Total bike value",
+  "totalKmAllBikes": "Total distance: {km} km",
+  "@totalKmAllBikes": {
+    "placeholders": {"km": {}}
+  },
+  "totalGearValueLabel": "Total gear value: {value}",
+  "@totalGearValueLabel": {
+    "placeholders": {"value": {}}
+  },
+  "perBikeBreakdown": "Per-bike breakdown",
+  "bikeValueLabel": "Bike value: {value}",
+  "@bikeValueLabel": {
+    "placeholders": {"value": {}}
+  },
+
+  "languageTitle": "Language",
+  "primaryBikeTitle": "Primary bike",
+  "primaryBikeLabel": "Select primary bike",
+  "primaryBikeNone": "No primary bike",
+  "primaryBikeEmpty": "Add a bike to choose a primary one.",
+  "languageEnglish": "English",
+  "languageUkrainian": "Ukrainian",
+  "biometricToggleTitle": "FaceID/TouchID unlock",
+  "biometricToggleSubtitle": "Require biometrics on launch",
+  "subscriptionTitle": "Subscription",
+  "proStatus": "Pro",
+  "freeStatus": "Free",
+  "upgradeToPro": "Upgrade to Pro",
+  "cancelPro": "Cancel Pro",
+  "stravaTitle": "Strava",
+  "stravaConnected": "Strava connected",
+  "stravaDisconnected": "Strava not connected",
+  "stravaLocked": "Strava sync is Pro-only",
+  "connectStrava": "Connect Strava",
+  "disconnectStrava": "Disconnect Strava",
+  "accountTitle": "Account",
+  "phoneAuthStub": "Phone login is coming soon.",
+
+  "openAuth": "Open login",
+  "aboutTitle": "About",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "placeholders": {"version": {}}
+  },
+
+  "paywallTitle": "VelPas Pro",
+  "proTitle": "VelPas Pro",
+  "proSubtitle": "Unlock premium maintenance and sync features.",
+  "proBenefitStrava": "Strava sync",
+  "proBenefitUnlimited": "Unlimited bikes & components",
+  "proBenefitAlerts": "Smart alerts (coming soon)",
+  "proPrice": "$5 / month",
+  "proPriceNote": "Cancel anytime",
+  "startPro": "Start Pro",
+  "restorePurchases": "Restore purchases",
+
+  "phoneAuthTitle": "Phone registration",
+  "phoneAuthSubtitle": "Sign in with your phone number (stub)",
+  "phoneNumberLabel": "Phone number",
+  "otpLabel": "Code",
+  "continueLabel": "Continue",
+
+  "unlockTitle": "Unlock VelPas",
+  "unlockSubtitle": "Use biometrics to continue",
+  "unlockAction": "Unlock"
+}

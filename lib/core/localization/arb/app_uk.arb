@@ -1,0 +1,197 @@
+{
+  "@@locale": "uk",
+  "appName": "VelPas",
+  "tagline": "Катай. Трекни. Міняй вчасно.",
+  "aboutDescription": "VelPas — це застосунок для велоспільноти: облік пробігу компонентів, історії замін і гардероба. Працює офлайн та допомагає вчасно обслуговувати байк і спорядження.",
+
+  "homeTitle": "Головна",
+  "garageTitle": "Гараж",
+  "wardrobeTitle": "Гардероб",
+  "insightsTitle": "Аналітика",
+  "settingsTitle": "Налаштування",
+  "settingsTab": "Налашт.",
+
+  "lastSyncTitle": "Остання синхронізація",
+  "lastSyncNever": "Ще не синхронізовано",
+  "addReplacement": "Додати заміну",
+  "syncStrava": "Синхронізувати Strava",
+  "yourBikes": "Ваші велосипеди",
+  "emptyGarageTitle": "Ще немає велосипедів",
+  "emptyGarageSubtitle": "Додайте перший байк, щоб почати трекінг компонентів.",
+  "addBike": "Додати велосипед",
+  "totalKmLabel": "{km} км загалом",
+  "@totalKmLabel": {
+    "placeholders": {"km": {}}
+  },
+  "noComponentsYet": "Компонентів ще немає",
+  "topAlertLabel": "Топ-алерт: {brand} {model} • {wearPercent}%",
+  "@topAlertLabel": {
+    "placeholders": {"brand": {}, "model": {}, "wearPercent": {}}
+  },
+  "statusOk": "ОК",
+  "statusWatch": "Увага",
+  "statusReplace": "Скоро заміна",
+  "statusReplaceNow": "Потрібна заміна",
+  "selectBike": "Оберіть велосипед",
+  "selectComponent": "Оберіть компонент",
+  "syncSuccess": "Імпортовано {added} поїздок • {summary}",
+  "@syncSuccess": {
+    "placeholders": {"added": {}, "summary": {}}
+  },
+
+  "bikeDetailTitle": "Деталі велосипеда",
+  "bikeNotFound": "Велосипед не знайдено",
+  "componentsTitle": "Компоненти",
+  "addComponent": "Додати компонент",
+  "categoryDrivetrain": "Трансмісія",
+  "categoryWheelsTires": "Колеса й шини",
+  "categoryBrakes": "Гальма",
+  "categoryCockpit": "Кокпіт",
+  "categoryOther": "Інше",
+  "kmSinceInstall": "{km} км після установки • ресурс {expected} км",
+  "@kmSinceInstall": {
+    "placeholders": {"km": {}, "expected": {}}
+  },
+  "purchasePriceLabel": "Ціна покупки: {price}",
+  "@purchasePriceLabel": {
+    "placeholders": {"price": {}}
+  },
+  "componentType": "Тип компонента",
+  "componentTypeChain": "Ланцюг",
+  "componentTypeCassette": "Касета",
+  "componentTypeChainring": "Зірка",
+  "componentTypePowerMeter": "Паверметр",
+  "componentTypeShifters": "Манетки",
+  "componentTypeRearDerailleur": "Задній перемикач",
+  "componentTypeFrontDerailleur": "Передній перемикач",
+  "componentTypeWheels": "Колеса",
+  "componentTypeTires": "Покришки",
+  "componentTypeBrakes": "Гальма",
+  "componentTypeCockpit": "Кокпіт",
+  "componentTypeOther": "Інше",
+  "brandLabel": "Бренд",
+  "modelLabel": "Модель",
+  "expectedLifeLabel": "Очікуваний ресурс (км)",
+  "priceOptionalLabel": "Ціна (необов'язково)",
+  "saveLabel": "Зберегти",
+  "installedAtKm": "Встановлено на {km} км",
+  "@installedAtKm": {
+    "placeholders": {"km": {}}
+  },
+
+  "editBike": "Редагувати велосипед",
+  "bikeNameLabel": "Назва велосипеда",
+  "requiredField": "Обов'язкове",
+  "purchasePriceOptional": "Ціна покупки (необов'язково)",
+  "deleteBike": "Видалити велосипед",
+  "bikePhotoLabel": "Фото велосипеда",
+  "pickPhoto": "Торкніться, щоб додати фото",
+  "photoPickerUnavailable": "Вибір фото недоступний на цій платформі.",
+
+  "componentDetailTitle": "Деталі компонента",
+  "componentNotFound": "Компонент не знайдено",
+  "replaceComponent": "Замінити компонент",
+  "replacementHistory": "Історія замін",
+  "noHistory": "Історії замін ще немає",
+  "removedAtKm": "Знято на {km} км",
+  "@removedAtKm": {
+    "placeholders": {"km": {}}
+  },
+
+  "removalKmLabel": "Пробіг при знятті",
+  "currentBikeKmLabel": "Поточний пробіг: {km}",
+  "@currentBikeKmLabel": {
+    "placeholders": {"km": {}}
+  },
+  "newComponentTitle": "Новий компонент",
+
+  "wardrobeTitle": "Гардероб",
+  "totalGearValue": "Загальна вартість спорядження",
+  "itemsCount": "{count} речей",
+  "@itemsCount": {
+    "placeholders": {"count": {}}
+  },
+  "categoryHelmets": "Шоломи",
+  "categoryGlasses": "Окуляри",
+  "categoryJerseys": "Джерсі",
+  "categoryBibs": "Велотруси",
+  "categoryShoes": "Взуття",
+  "categoryGloves": "Рукавички",
+  "categoryJackets": "Куртки",
+  "categoryAccessories": "Аксесуари",
+  "emptyWardrobeCategory": "Ще немає речей",
+  "itemQuantity": "К-ть {quantity}",
+  "@itemQuantity": {
+    "placeholders": {"quantity": {}}
+  },
+  "addItem": "Додати річ",
+  "editItem": "Редагувати річ",
+  "quantityLabel": "Кількість",
+  "notesLabel": "Нотатки",
+  "deleteItem": "Видалити річ",
+
+  "totalBikeValue": "Загальна вартість велосипедів",
+  "totalKmAllBikes": "Загальний пробіг: {km} км",
+  "@totalKmAllBikes": {
+    "placeholders": {"km": {}}
+  },
+  "totalGearValueLabel": "Вартість спорядження: {value}",
+  "@totalGearValueLabel": {
+    "placeholders": {"value": {}}
+  },
+  "perBikeBreakdown": "По кожному байку",
+  "bikeValueLabel": "Вартість байка: {value}",
+  "@bikeValueLabel": {
+    "placeholders": {"value": {}}
+  },
+
+  "languageTitle": "Мова",
+  "primaryBikeTitle": "Основний велосипед",
+  "primaryBikeLabel": "Виберіть основний велосипед",
+  "primaryBikeNone": "Без основного велосипеда",
+  "primaryBikeEmpty": "Додайте велосипед, щоб вибрати основний.",
+  "languageEnglish": "English",
+  "languageUkrainian": "Українська",
+  "biometricToggleTitle": "Розблокування FaceID/TouchID",
+  "biometricToggleSubtitle": "Вимагати біометрію при запуску",
+  "subscriptionTitle": "Підписка",
+  "proStatus": "Pro",
+  "freeStatus": "Free",
+  "upgradeToPro": "Оновити до Pro",
+  "cancelPro": "Скасувати Pro",
+  "stravaTitle": "Strava",
+  "stravaConnected": "Strava підключено",
+  "stravaDisconnected": "Strava не підключено",
+  "stravaLocked": "Синхронізація Strava лише для Pro",
+  "connectStrava": "Підключити Strava",
+  "disconnectStrava": "Відключити Strava",
+  "accountTitle": "Акаунт",
+  "phoneAuthStub": "Вхід за номером телефону скоро.",
+  "openAuth": "Відкрити вхід",
+  "aboutTitle": "Про застосунок",
+  "versionLabel": "Версія {version}",
+  "@versionLabel": {
+    "placeholders": {"version": {}}
+  },
+
+  "paywallTitle": "VelPas Pro",
+  "proTitle": "VelPas Pro",
+  "proSubtitle": "Відкрийте преміум-функції та синхронізацію.",
+  "proBenefitStrava": "Синхронізація Strava",
+  "proBenefitUnlimited": "Необмежені велосипеди й компоненти",
+  "proBenefitAlerts": "Розумні сповіщення (скоро)",
+  "proPrice": "$5 / місяць",
+  "proPriceNote": "Скасування будь-коли",
+  "startPro": "Почати Pro",
+  "restorePurchases": "Відновити покупки",
+
+  "phoneAuthTitle": "Реєстрація за телефоном",
+  "phoneAuthSubtitle": "Вхід за номером телефону (заглушка)",
+  "phoneNumberLabel": "Номер телефону",
+  "otpLabel": "Код",
+  "continueLabel": "Продовжити",
+
+  "unlockTitle": "Розблокувати VelPas",
+  "unlockSubtitle": "Використайте біометрію для входу",
+  "unlockAction": "Розблокувати"
+}

@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers.dart';
+
+class SettingsState {
+  SettingsState({
+    required this.locale,
+    required this.biometricsEnabled,
+    required this.isPro,
+    required this.lastSync,
+    required this.stravaConnected,
+    required this.primaryBikeId,
+  });
+
+  final Locale? locale;
+  final bool biometricsEnabled;
+  final bool isPro;
+  final DateTime? lastSync;
+  final bool stravaConnected;
+  final int? primaryBikeId;
+
+  SettingsState copyWith({
+    Locale? locale,
+    bool? biometricsEnabled,
+    bool? isPro,
+    DateTime? lastSync,
+    bool? stravaConnected,
+    int? primaryBikeId,
+  }) {
+    return SettingsState(
+      locale: locale ?? this.locale,
+      biometricsEnabled: biometricsEnabled ?? this.biometricsEnabled,
+      isPro: isPro ?? this.isPro,
+      lastSync: lastSync ?? this.lastSync,
+      stravaConnected: stravaConnected ?? this.stravaConnected,
+      primaryBikeId: primaryBikeId ?? this.primaryBikeId,
+    );
+  }
+}
+
+class SettingsController extends AsyncNotifier<SettingsState> {
+  @override
+  Future<SettingsState> build() async {
+    final storage = ref.read(secureStorageServiceProvider);
+    final localeCode = await storage.getLocaleCode();
+    return SettingsState(
+      locale: localeCode == null ? const Locale('en') : Locale(localeCode),
+      biometricsEnabled: await storage.getBiometricsEnabled(),
+      isPro: await storage.getProStatus(),
+      lastSync: await storage.getLastSyncAt(),
+      stravaConnected: await storage.getStravaConnected(),
+      primaryBikeId: await storage.getPrimaryBikeId(),
+    );
+  }
+
+  Future<void> setLocale(Locale? locale) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    final safeLocale = locale ?? const Locale('en');
+    await storage.setLocaleCode(safeLocale.languageCode);
+    state = AsyncData(state.value!.copyWith(locale: safeLocale));
+  }
+
+  Future<void> setBiometricsEnabled(bool enabled) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setBiometricsEnabled(enabled);
+    state = AsyncData(state.value!.copyWith(biometricsEnabled: enabled));
+  }
+
+  Future<void> setPro(bool isPro) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setProStatus(isPro);
+    if (!isPro) {
+      await storage.setStravaConnected(false);
+    }
+    state = AsyncData(
+      state.value!.copyWith(
+        isPro: isPro,
+        stravaConnected: isPro ? state.value!.stravaConnected : false,
+      ),
+    );
+  }
+
+  Future<void> setLastSync(DateTime value) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setLastSyncAt(value);
+    state = AsyncData(state.value!.copyWith(lastSync: value));
+  }
+
+  Future<void> setStravaConnected(bool value) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setStravaConnected(value);
+    state = AsyncData(state.value!.copyWith(stravaConnected: value));
+  }
+
+  Future<void> setPrimaryBikeId(int? value) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setPrimaryBikeId(value);
+    state = AsyncData(state.value!.copyWith(primaryBikeId: value));
+  }
+}
+
+final settingsControllerProvider =
+    AsyncNotifierProvider<SettingsController, SettingsState>(
+  SettingsController.new,
+);
