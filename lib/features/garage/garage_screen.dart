@@ -56,7 +56,7 @@ class GarageScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(12),
                           image: hasPhoto
                               ? DecorationImage(
-                                  image: FileImage(file!),
+                                  image: FileImage(file),
                                   fit: BoxFit.cover,
                                 )
                               : null,
