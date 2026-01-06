@@ -209,5 +209,7 @@
 
   "unlockTitle": "Unlock VelPas",
   "unlockSubtitle": "Use biometrics to continue",
-  "unlockAction": "Unlock"
+  "unlockAction": "Unlock",
+  "unlockReason": "Authenticate to unlock VelPas",
+  "unlockDisableBiometrics": "Disable biometrics"
 }

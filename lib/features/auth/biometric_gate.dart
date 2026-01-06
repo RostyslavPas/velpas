@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/localization/app_localizations_ext.dart';
 import '../../core/providers.dart';
 import '../../app/theme/velpas_theme.dart';
+import '../settings/settings_controller.dart';
 
 class BiometricGate extends ConsumerStatefulWidget {
   const BiometricGate({
@@ -21,6 +22,7 @@ class BiometricGate extends ConsumerStatefulWidget {
 class _BiometricGateState extends ConsumerState<BiometricGate> {
   bool _unlocked = false;
   bool _checking = false;
+  bool _failed = false;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _BiometricGateState extends ConsumerState<BiometricGate> {
     if (!widget.enabled || _checking) return;
     setState(() {
       _checking = true;
+      _failed = false;
     });
     final service = ref.read(biometricServiceProvider);
     final canCheck = await service.canCheck();
@@ -55,11 +58,23 @@ class _BiometricGateState extends ConsumerState<BiometricGate> {
       });
       return;
     }
-    final result = await service.authenticate();
+    final result = await service.authenticate(
+      reason: context.l10n.unlockReason,
+    );
     if (!mounted) return;
     setState(() {
       _unlocked = result;
       _checking = false;
+      _failed = !result;
+    });
+  }
+
+  Future<void> _disableBiometrics() async {
+    await ref.read(settingsControllerProvider.notifier).setBiometricsEnabled(false);
+    if (!mounted) return;
+    setState(() {
+      _unlocked = true;
+      _failed = false;
     });
   }
 
@@ -91,6 +106,13 @@ class _BiometricGateState extends ConsumerState<BiometricGate> {
               onPressed: _checking ? null : _maybeUnlock,
               child: Text(context.l10n.unlockAction),
             ),
+            if (_failed) ...[
+              const SizedBox(height: 12),
+              OutlinedButton(
+                onPressed: _disableBiometrics,
+                child: Text(context.l10n.unlockDisableBiometrics),
+              ),
+            ],
           ],
         ),
       ),

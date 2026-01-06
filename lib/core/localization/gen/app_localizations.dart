@@ -979,6 +979,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock'**
   String get unlockAction;
+
+  /// No description provided for @unlockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate to unlock VelPas'**
+  String get unlockReason;
+
+  /// No description provided for @unlockDisableBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable biometrics'**
+  String get unlockDisableBiometrics;
 }
 
 class _AppLocalizationsDelegate

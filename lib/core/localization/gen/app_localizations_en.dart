@@ -482,4 +482,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unlockAction => 'Unlock';
+
+  @override
+  String get unlockReason => 'Authenticate to unlock VelPas';
+
+  @override
+  String get unlockDisableBiometrics => 'Disable biometrics';
 }

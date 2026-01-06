@@ -15,13 +15,14 @@ class BiometricService {
     }
   }
 
-  Future<bool> authenticate() async {
+  Future<bool> authenticate({required String reason}) async {
     try {
       return await _auth.authenticate(
-        localizedReason: 'Unlock VelPas',
+        localizedReason: reason,
         options: const AuthenticationOptions(
-          biometricOnly: true,
+          biometricOnly: false,
           stickyAuth: true,
+          useErrorDialogs: true,
         ),
       );
     } catch (_) {
