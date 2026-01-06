@@ -6,6 +6,7 @@ import '../features/settings/settings_controller.dart';
 import '../features/auth/biometric_gate.dart';
 import 'router/router_provider.dart';
 import 'theme/velpas_theme.dart';
+import 'strava_link_listener.dart';
 
 class VelPasApp extends ConsumerWidget {
   const VelPasApp({super.key});
@@ -26,9 +27,11 @@ class VelPasApp extends ConsumerWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           builder: (context, child) {
-            return BiometricGate(
-              enabled: state.biometricsEnabled,
-              child: child ?? const SizedBox.shrink(),
+            return StravaLinkListener(
+              child: BiometricGate(
+                enabled: state.biometricsEnabled,
+                child: child ?? const SizedBox.shrink(),
+              ),
             );
           },
         );

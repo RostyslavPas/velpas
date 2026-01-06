@@ -22,6 +22,15 @@ GoRouter createRouter() {
   return GoRouter(
     navigatorKey: _rootKey,
     initialLocation: '/home',
+    overridePlatformDefaultLocation: true,
+    onException: (context, state, router) {
+      final uri = state.uri;
+      if (uri.scheme == 'velpas') {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          router.go('/home');
+        });
+      }
+    },
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

@@ -18,6 +18,8 @@ import 'services/secure_storage_service.dart';
 import 'services/seed_service.dart';
 import 'services/strava_service.dart';
 import 'services/strava_api_client.dart';
+import 'services/strava_auth_service.dart';
+import 'services/strava_token_service.dart';
 
 final secureStorageProvider = Provider<FlutterSecureStorage>(
   (ref) => const FlutterSecureStorage(),
@@ -35,11 +37,31 @@ final biometricServiceProvider = Provider<BiometricService>(
 );
 
 final dioProvider = Provider<Dio>((ref) {
-  return Dio(BaseOptions(connectTimeout: const Duration(seconds: 10)));
+  return Dio(
+    BaseOptions(
+      baseUrl: 'https://www.strava.com/api/v3',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 20),
+    ),
+  );
+});
+
+final backendDioProvider = Provider<Dio>((ref) {
+  return Dio(
+    BaseOptions(
+      baseUrl: 'https://pasue.com.ua',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 20),
+    ),
+  );
 });
 
 final stravaApiClientProvider = Provider<StravaApiClient>((ref) {
   return StravaApiClient(ref.watch(dioProvider));
+});
+
+final stravaTokenServiceProvider = Provider<StravaTokenService>((ref) {
+  return StravaTokenService(ref.watch(backendDioProvider));
 });
 
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -85,7 +107,17 @@ final wardrobeRepositoryProvider = Provider<WardrobeRepository>((ref) {
 });
 
 final stravaServiceProvider = Provider<StravaService>((ref) {
-  return MockStravaService(ref.watch(rideRepositoryProvider));
+  return RealStravaService(
+    apiClient: ref.watch(stravaApiClientProvider),
+    rideRepository: ref.watch(rideRepositoryProvider),
+    bikeRepository: ref.watch(bikeRepositoryProvider),
+    storage: ref.watch(secureStorageServiceProvider),
+    tokenService: ref.watch(stravaTokenServiceProvider),
+  );
+});
+
+final stravaAuthServiceProvider = Provider<StravaAuthService>((ref) {
+  return StravaAuthService(ref.watch(secureStorageServiceProvider));
 });
 
 final seedServiceProvider = Provider<SeedService>((ref) {

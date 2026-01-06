@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +39,9 @@ class GarageScreen extends ConsumerWidget {
             itemCount: bikes.length,
             itemBuilder: (context, index) {
               final bike = bikes[index];
+              final photoPath = bike.bike.photoPath;
+              final file = (!kIsWeb && photoPath != null) ? File(photoPath) : null;
+              final hasPhoto = file != null && file.existsSync();
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: VCard(
@@ -48,8 +54,14 @@ class GarageScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: Colors.black26,
                           borderRadius: BorderRadius.circular(12),
+                          image: hasPhoto
+                              ? DecorationImage(
+                                  image: FileImage(file!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
-                        child: const Icon(Icons.directions_bike),
+                        child: hasPhoto ? null : const Icon(Icons.directions_bike),
                       ),
                       const SizedBox(width: 16),
                       Expanded(

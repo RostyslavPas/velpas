@@ -163,6 +163,21 @@
   "stravaConnected": "Strava connected",
   "stravaDisconnected": "Strava not connected",
   "stravaLocked": "Strava sync is Pro-only",
+  "stravaConnectRequired": "Connect Strava to sync.",
+  "stravaSessionExpired": "Strava session expired. Please reconnect.",
+  "stravaSyncFailed": "Strava sync failed. Try again.",
+  "stravaAuthFailed": "Unable to open Strava. Try again.",
+  "stravaImporting": "Importing Strava bikes...",
+  "stravaImportBikes": "Import bikes from Strava",
+  "stravaImportFailed": "Strava import failed. Try again.",
+  "stravaImportResult": "Imported {added}, linked {linked}, skipped {skipped}.",
+  "@stravaImportResult": {
+    "placeholders": {
+      "added": {},
+      "linked": {},
+      "skipped": {}
+    }
+  },
   "connectStrava": "Connect Strava",
   "disconnectStrava": "Disconnect Strava",
   "accountTitle": "Account",

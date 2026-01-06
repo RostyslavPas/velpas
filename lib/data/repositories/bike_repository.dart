@@ -14,11 +14,15 @@ class BikeRepository {
     required String name,
     double? purchasePrice,
     String? photoPath,
+    String? stravaGearId,
+    int manualKm = 0,
   }) {
     return _bikeDao.insertBike(
       name: name,
       purchasePrice: purchasePrice,
       photoPath: photoPath,
+      manualKm: manualKm,
+      stravaGearId: stravaGearId,
     );
   }
 
@@ -37,4 +41,16 @@ class BikeRepository {
   }
 
   Future<void> deleteBike(int id) => _bikeDao.deleteBike(id);
+
+  Future<void> updateStravaGearId(int id, String? gearId) {
+    return _bikeDao.updateStravaGearId(id, gearId);
+  }
+
+  Future<void> updateManualKm(int id, int manualKm) {
+    return _bikeDao.updateManualKm(id, manualKm);
+  }
+
+  Future<List<Bike>> fetchAllBikes() => _bikeDao.fetchAllBikes();
+
+  Future<Map<String, int>> fetchStravaBikeMap() => _bikeDao.fetchStravaBikeMap();
 }

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/widgets/v_card.dart';
 import '../../core/localization/app_localizations_ext.dart';
+import '../../core/providers.dart';
+import '../../core/services/strava_service.dart';
 import '../garage/garage_providers.dart';
 import 'settings_controller.dart';
 
@@ -154,7 +156,7 @@ class SettingsScreen extends ConsumerWidget {
                               ? context.l10n.stravaConnected
                               : context.l10n.stravaDisconnected)
                           : context.l10n.stravaLocked,
-                    ),
+                  ),
                     const SizedBox(height: 12),
                     if (!isPro)
                       ElevatedButton(
@@ -162,17 +164,75 @@ class SettingsScreen extends ConsumerWidget {
                         child: Text(context.l10n.connectStrava),
                       )
                     else if (settings.stravaConnected)
-                      OutlinedButton(
-                        onPressed: () => ref
-                            .read(settingsControllerProvider.notifier)
-                            .setStravaConnected(false),
-                        child: Text(context.l10n.disconnectStrava),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () => ref
+                                .read(settingsControllerProvider.notifier)
+                                .disconnectStrava(),
+                            child: Text(context.l10n.disconnectStrava),
+                          ),
+                          const SizedBox(height: 8),
+                          OutlinedButton(
+                            onPressed: () async {
+                              final messenger = ScaffoldMessenger.of(context);
+                              messenger.showSnackBar(
+                                SnackBar(content: Text(context.l10n.stravaImporting)),
+                              );
+                              try {
+                                final result =
+                                    await ref.read(stravaServiceProvider).importBikes();
+                                await ref
+                                    .read(settingsControllerProvider.notifier)
+                                    .setLastSync(DateTime.now());
+                                if (!context.mounted) return;
+                                messenger.showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      context.l10n.stravaImportResult(
+                                        result.added,
+                                        result.linked,
+                                        result.skipped,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              } on StravaAuthException catch (error) {
+                                await ref
+                                    .read(settingsControllerProvider.notifier)
+                                    .disconnectStrava();
+                                if (!context.mounted) return;
+                                final message = error.error == StravaAuthError.expired
+                                    ? context.l10n.stravaSessionExpired
+                                    : context.l10n.stravaConnectRequired;
+                                messenger.showSnackBar(
+                                  SnackBar(content: Text(message)),
+                                );
+                              } on Exception {
+                                if (!context.mounted) return;
+                                messenger.showSnackBar(
+                                  SnackBar(content: Text(context.l10n.stravaImportFailed)),
+                                );
+                              }
+                            },
+                            child: Text(context.l10n.stravaImportBikes),
+                          ),
+                        ],
                       )
                     else
                       ElevatedButton(
-                        onPressed: () => ref
-                            .read(settingsControllerProvider.notifier)
-                            .setStravaConnected(true),
+                        onPressed: () async {
+                          try {
+                            await ref.read(stravaAuthServiceProvider).startAuth();
+                          } on Exception {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(context.l10n.stravaAuthFailed)),
+                              );
+                            }
+                          }
+                        },
                         child: Text(context.l10n.connectStrava),
                       ),
                   ],
