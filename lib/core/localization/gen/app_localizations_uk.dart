@@ -484,4 +484,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get unlockAction => 'Розблокувати';
+
+  @override
+  String get unlockReason => 'Підтвердіть особу, щоб розблокувати VelPas';
+
+  @override
+  String get unlockDisableBiometrics => 'Вимкнути біометрію';
 }

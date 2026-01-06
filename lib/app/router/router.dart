@@ -12,7 +12,6 @@ import '../../features/wardrobe/wardrobe_category_screen.dart';
 import '../../features/insights/insights_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/settings/about_screen.dart';
-import '../../features/auth/phone_auth_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../core/localization/app_localizations_ext.dart';
 
@@ -128,11 +127,6 @@ GoRouter createRouter() {
         path: '/settings/about',
         parentNavigatorKey: _rootKey,
         builder: (context, state) => const AboutScreen(),
-      ),
-      GoRoute(
-        path: '/settings/auth',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) => const PhoneAuthScreen(),
       ),
       GoRoute(
         path: '/paywall',

@@ -240,25 +240,6 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               VCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.accountTitle,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(context.l10n.phoneAuthStub),
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: () => context.push('/settings/auth'),
-                      child: Text(context.l10n.openAuth),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              VCard(
                 onTap: () => context.push('/settings/about'),
                 child: Row(
                   children: [

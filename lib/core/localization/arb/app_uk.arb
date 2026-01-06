@@ -208,5 +208,7 @@
 
   "unlockTitle": "Розблокувати VelPas",
   "unlockSubtitle": "Використайте біометрію для входу",
-  "unlockAction": "Розблокувати"
+  "unlockAction": "Розблокувати",
+  "unlockReason": "Підтвердіть особу, щоб розблокувати VelPas",
+  "unlockDisableBiometrics": "Вимкнути біометрію"
 }
