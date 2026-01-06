@@ -50,6 +50,12 @@ class AppDatabase extends GeneratedDatabase {
       );
     ''');
 
+    await _ensureColumn('bikes', 'strava_gear_id', 'TEXT');
+    await customStatement('''
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_bikes_strava_gear_id
+      ON bikes(strava_gear_id)
+    ''');
+
     await customStatement('''
       CREATE TABLE IF NOT EXISTS components (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -108,6 +114,14 @@ class AppDatabase extends GeneratedDatabase {
         value TEXT
       );
     ''');
+  }
+
+  Future<void> _ensureColumn(String table, String column, String type) async {
+    final rows = await customSelect('PRAGMA table_info($table);').get();
+    final exists = rows.any((row) => row.read<String>('name') == column);
+    if (!exists) {
+      await customStatement('ALTER TABLE $table ADD COLUMN $column $type;');
+    }
   }
 }
 

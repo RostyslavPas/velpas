@@ -380,6 +380,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stravaLocked => 'Strava sync is Pro-only';
 
   @override
+  String get stravaConnectRequired => 'Connect Strava to sync.';
+
+  @override
+  String get stravaSessionExpired =>
+      'Strava session expired. Please reconnect.';
+
+  @override
+  String get stravaSyncFailed => 'Strava sync failed. Try again.';
+
+  @override
+  String get stravaAuthFailed => 'Unable to open Strava. Try again.';
+
+  @override
+  String get stravaImporting => 'Importing Strava bikes...';
+
+  @override
+  String get stravaImportBikes => 'Import bikes from Strava';
+
+  @override
+  String get stravaImportFailed => 'Strava import failed. Try again.';
+
+  @override
+  String stravaImportResult(Object added, Object linked, Object skipped) {
+    return 'Imported $added, linked $linked, skipped $skipped.';
+  }
+
+  @override
   String get connectStrava => 'Connect Strava';
 
   @override

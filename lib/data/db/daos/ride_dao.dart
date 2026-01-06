@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import '../app_database.dart';
 import '../../models/ride_models.dart';
-import '../../../core/services/strava_service.dart';
 
 class RideDao {
   RideDao(this._db);
@@ -19,8 +18,18 @@ class RideDao {
         .map((rows) => rows.map(_mapRide).toList());
   }
 
-  Future<int> insertMockActivities(List<MockActivity> activities) async {
+  Future<int> countByBike(int bikeId) async {
+    final row = await _db.customSelect(
+      'SELECT COUNT(*) AS total FROM ride_imports WHERE bike_id = ?',
+      variables: [Variable<int>(bikeId)],
+      readsFrom: {_db.rideImportsTable},
+    ).getSingle();
+    return row.read<int>('total');
+  }
+
+  Future<RideInsertResult> insertActivities(List<RideImportInput> activities) async {
     var added = 0;
+    var totalDistanceKm = 0;
     await _db.transaction(() async {
       for (final activity in activities) {
         final result = await _db.customInsert(
@@ -40,10 +49,11 @@ class RideDao {
         );
         if (result > 0) {
           added += 1;
+          totalDistanceKm += activity.distanceKm;
         }
       }
     });
-    return added;
+    return RideInsertResult(added: added, totalDistanceKm: totalDistanceKm);
   }
 
   RideImport _mapRide(QueryRow row) {

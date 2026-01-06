@@ -782,6 +782,54 @@ abstract class AppLocalizations {
   /// **'Strava sync is Pro-only'**
   String get stravaLocked;
 
+  /// No description provided for @stravaConnectRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Strava to sync.'**
+  String get stravaConnectRequired;
+
+  /// No description provided for @stravaSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Strava session expired. Please reconnect.'**
+  String get stravaSessionExpired;
+
+  /// No description provided for @stravaSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Strava sync failed. Try again.'**
+  String get stravaSyncFailed;
+
+  /// No description provided for @stravaAuthFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open Strava. Try again.'**
+  String get stravaAuthFailed;
+
+  /// No description provided for @stravaImporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing Strava bikes...'**
+  String get stravaImporting;
+
+  /// No description provided for @stravaImportBikes.
+  ///
+  /// In en, this message translates to:
+  /// **'Import bikes from Strava'**
+  String get stravaImportBikes;
+
+  /// No description provided for @stravaImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Strava import failed. Try again.'**
+  String get stravaImportFailed;
+
+  /// No description provided for @stravaImportResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {added}, linked {linked}, skipped {skipped}.'**
+  String stravaImportResult(Object added, Object linked, Object skipped);
+
   /// No description provided for @connectStrava.
   ///
   /// In en, this message translates to:

@@ -39,9 +39,8 @@ class GarageScreen extends ConsumerWidget {
             itemCount: bikes.length,
             itemBuilder: (context, index) {
               final bike = bikes[index];
-              final file = (!kIsWeb && bike.bike.photoPath != null)
-                  ? File(bike.bike.photoPath!)
-                  : null;
+              final photoPath = bike.bike.photoPath;
+              final file = (!kIsWeb && photoPath != null) ? File(photoPath) : null;
               final hasPhoto = file != null && file.existsSync();
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),

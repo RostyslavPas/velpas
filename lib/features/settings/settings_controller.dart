@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/models/strava_models.dart';
 import '../../core/providers.dart';
 
 class SettingsState {
@@ -43,12 +44,13 @@ class SettingsController extends AsyncNotifier<SettingsState> {
   Future<SettingsState> build() async {
     final storage = ref.read(secureStorageServiceProvider);
     final localeCode = await storage.getLocaleCode();
+    final tokens = await storage.getStravaTokens();
     return SettingsState(
       locale: localeCode == null ? const Locale('en') : Locale(localeCode),
       biometricsEnabled: await storage.getBiometricsEnabled(),
       isPro: await storage.getProStatus(),
       lastSync: await storage.getLastSyncAt(),
-      stravaConnected: await storage.getStravaConnected(),
+      stravaConnected: tokens != null,
       primaryBikeId: await storage.getPrimaryBikeId(),
     );
   }
@@ -70,7 +72,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     final storage = ref.read(secureStorageServiceProvider);
     await storage.setProStatus(isPro);
     if (!isPro) {
-      await storage.setStravaConnected(false);
+      await storage.clearStravaTokens();
     }
     state = AsyncData(
       state.value!.copyWith(
@@ -90,6 +92,36 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     final storage = ref.read(secureStorageServiceProvider);
     await storage.setStravaConnected(value);
     state = AsyncData(state.value!.copyWith(stravaConnected: value));
+  }
+
+  Future<void> applyStravaTokens(StravaTokens tokens) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setStravaTokens(tokens);
+    final current = state.value ??
+        SettingsState(
+          locale: const Locale('en'),
+          biometricsEnabled: false,
+          isPro: false,
+          lastSync: null,
+          stravaConnected: false,
+          primaryBikeId: null,
+        );
+    state = AsyncData(current.copyWith(stravaConnected: true));
+  }
+
+  Future<void> disconnectStrava() async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.clearStravaTokens();
+    final current = state.value ??
+        SettingsState(
+          locale: const Locale('en'),
+          biometricsEnabled: false,
+          isPro: false,
+          lastSync: null,
+          stravaConnected: false,
+          primaryBikeId: null,
+        );
+    state = AsyncData(current.copyWith(stravaConnected: false));
   }
 
   Future<void> setPrimaryBikeId(int? value) async {

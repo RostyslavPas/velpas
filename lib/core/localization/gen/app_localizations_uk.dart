@@ -380,6 +380,35 @@ class AppLocalizationsUk extends AppLocalizations {
   String get stravaLocked => 'Синхронізація Strava лише для Pro';
 
   @override
+  String get stravaConnectRequired => 'Підключіть Strava для синхронізації.';
+
+  @override
+  String get stravaSessionExpired =>
+      'Сесія Strava завершилась. Підключіть знову.';
+
+  @override
+  String get stravaSyncFailed =>
+      'Синхронізація Strava не вдалася. Спробуйте ще раз.';
+
+  @override
+  String get stravaAuthFailed =>
+      'Не вдалося відкрити Strava. Спробуйте ще раз.';
+
+  @override
+  String get stravaImporting => 'Імпорт велосипедів зі Strava...';
+
+  @override
+  String get stravaImportBikes => 'Імпортувати велосипеди зі Strava';
+
+  @override
+  String get stravaImportFailed => 'Імпорт Strava не вдався. Спробуйте ще раз.';
+
+  @override
+  String stravaImportResult(Object added, Object linked, Object skipped) {
+    return 'Імпортовано $added, повʼязано $linked, пропущено $skipped.';
+  }
+
+  @override
   String get connectStrava => 'Підключити Strava';
 
   @override

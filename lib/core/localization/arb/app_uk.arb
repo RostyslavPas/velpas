@@ -163,6 +163,21 @@
   "stravaConnected": "Strava підключено",
   "stravaDisconnected": "Strava не підключено",
   "stravaLocked": "Синхронізація Strava лише для Pro",
+  "stravaConnectRequired": "Підключіть Strava для синхронізації.",
+  "stravaSessionExpired": "Сесія Strava завершилась. Підключіть знову.",
+  "stravaSyncFailed": "Синхронізація Strava не вдалася. Спробуйте ще раз.",
+  "stravaAuthFailed": "Не вдалося відкрити Strava. Спробуйте ще раз.",
+  "stravaImporting": "Імпорт велосипедів зі Strava...",
+  "stravaImportBikes": "Імпортувати велосипеди зі Strava",
+  "stravaImportFailed": "Імпорт Strava не вдався. Спробуйте ще раз.",
+  "stravaImportResult": "Імпортовано {added}, повʼязано {linked}, пропущено {skipped}.",
+  "@stravaImportResult": {
+    "placeholders": {
+      "added": {},
+      "linked": {},
+      "skipped": {}
+    }
+  },
   "connectStrava": "Підключити Strava",
   "disconnectStrava": "Відключити Strava",
   "accountTitle": "Акаунт",

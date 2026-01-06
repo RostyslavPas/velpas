@@ -6,6 +6,7 @@ import '../../app/widgets/status_chip.dart';
 import '../../app/widgets/v_card.dart';
 import '../../core/localization/app_localizations_ext.dart';
 import '../../core/providers.dart';
+import '../../core/services/strava_service.dart';
 import '../../core/utils/component_utils.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/component_models.dart';
@@ -177,6 +178,14 @@ class HomeScreen extends ConsumerWidget {
       }
       return;
     }
+    if (settingsAsync.value?.stravaConnected != true) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.stravaConnectRequired)),
+        );
+      }
+      return;
+    }
 
     final bikes = await ref.read(bikesStreamProvider.future);
     if (bikes.isEmpty) return;
@@ -184,14 +193,32 @@ class HomeScreen extends ConsumerWidget {
     final selectedBikeId = await _selectBike(context, bikes);
     if (selectedBikeId == null) return;
 
-    final service = ref.read(stravaServiceProvider);
-    final result = await service.syncBike(selectedBikeId);
-    await ref.read(settingsControllerProvider.notifier).setLastSync(DateTime.now());
+    try {
+      final service = ref.read(stravaServiceProvider);
+      final result = await service.syncBike(selectedBikeId);
+      await ref.read(settingsControllerProvider.notifier).setLastSync(DateTime.now());
 
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.syncSuccess(result.added, result.summary()))),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.syncSuccess(result.added, result.summary()))),
+        );
+      }
+    } on StravaAuthException catch (error) {
+      await ref.read(settingsControllerProvider.notifier).disconnectStrava();
+      if (context.mounted) {
+        final message = error.error == StravaAuthError.expired
+            ? context.l10n.stravaSessionExpired
+            : context.l10n.stravaConnectRequired;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    } on Exception {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.stravaSyncFailed)),
+        );
+      }
     }
   }
 

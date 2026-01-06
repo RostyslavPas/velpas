@@ -6,6 +6,7 @@ class Bike {
     required this.createdAt,
     this.purchasePrice,
     this.photoPath,
+    this.stravaGearId,
   });
 
   final int id;
@@ -14,6 +15,7 @@ class Bike {
   final String? photoPath;
   final int manualKm;
   final DateTime createdAt;
+  final String? stravaGearId;
 }
 
 class BikeWithStats {
