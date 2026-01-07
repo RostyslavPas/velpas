@@ -6,9 +6,24 @@ class Formatters {
     return formatter.format(value);
   }
 
-  static String price(num value) {
-    final formatter = NumberFormat.currency(symbol: '\$', decimalDigits: 0);
+  static String price(num value, {String currencyCode = 'USD'}) {
+    final formatter = NumberFormat.currency(
+      symbol: _currencySymbol(currencyCode),
+      decimalDigits: 0,
+    );
     return formatter.format(value);
+  }
+
+  static String _currencySymbol(String code) {
+    switch (code) {
+      case 'EUR':
+        return '€';
+      case 'UAH':
+        return '₴';
+      case 'USD':
+      default:
+        return '\$';
+    }
   }
 
   static String dateTime(DateTime value) {

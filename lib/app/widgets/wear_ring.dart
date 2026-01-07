@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../theme/velpas_theme.dart';
+import '../theme/prosto_theme.dart';
 
 class WearRing extends StatelessWidget {
   const WearRing({
@@ -27,7 +27,7 @@ class WearRing extends StatelessWidget {
         painter: _WearRingPainter(
           progress: progress.clamp(0.0, 1.0).toDouble(),
           strokeWidth: strokeWidth,
-          color: color ?? VelPasColors.champagne,
+          color: color ?? ProsToColors.champagne,
         ),
         child: Center(child: center),
       ),
@@ -52,7 +52,7 @@ class _WearRingPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     final basePaint = Paint()
-      ..color = VelPasColors.stroke
+      ..color = ProsToColors.stroke
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 

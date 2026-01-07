@@ -1,4 +1,4 @@
-# VelPas
+# PROS.TO
 
 Premium cycling community app for tracking bike component mileage, replacements, and wardrobe inventory.
 

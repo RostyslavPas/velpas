@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-class VelPasColors {
+
+class ProsToColors {
   static const bg0 = Color(0xFF0B0D10);
   static const bg1 = Color(0xFF11141A);
   static const bg2 = Color(0xFF161B22);
@@ -19,32 +20,32 @@ class VelPasColors {
   static const danger = Color(0xFFE07A7A);
 }
 
-class VelPasTheme {
+class ProsToTheme {
   static ThemeData dark() {
     final base = ThemeData.dark(useMaterial3: true);
     final textTheme = base.textTheme.apply(
-      bodyColor: VelPasColors.silverPrimary,
-      displayColor: VelPasColors.silverPrimary,
+      bodyColor: ProsToColors.silverPrimary,
+      displayColor: ProsToColors.silverPrimary,
       fontFamily: 'Avenir Next',
     );
 
     return base.copyWith(
-      scaffoldBackgroundColor: VelPasColors.bg0,
-      canvasColor: VelPasColors.bg0,
-      cardColor: VelPasColors.bg1,
+      scaffoldBackgroundColor: ProsToColors.bg0,
+      canvasColor: ProsToColors.bg0,
+      cardColor: ProsToColors.bg1,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: VelPasColors.champagne,
+        seedColor: ProsToColors.champagne,
         brightness: Brightness.dark,
-        primary: VelPasColors.champagne,
-        onPrimary: VelPasColors.bg0,
-        secondary: VelPasColors.champagneDeep,
-        onSecondary: VelPasColors.bg0,
-        surface: VelPasColors.bg1,
-        onSurface: VelPasColors.silverPrimary,
-        background: VelPasColors.bg0,
-        onBackground: VelPasColors.silverPrimary,
-        error: VelPasColors.danger,
-        onError: VelPasColors.bg0,
+        primary: ProsToColors.champagne,
+        onPrimary: ProsToColors.bg0,
+        secondary: ProsToColors.champagneDeep,
+        onSecondary: ProsToColors.bg0,
+        surface: ProsToColors.bg1,
+        onSurface: ProsToColors.silverPrimary,
+        background: ProsToColors.bg0,
+        onBackground: ProsToColors.silverPrimary,
+        error: ProsToColors.danger,
+        onError: ProsToColors.bg0,
       ),
       textTheme: textTheme.copyWith(
         titleLarge: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -52,56 +53,56 @@ class VelPasTheme {
         titleSmall: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: VelPasColors.bg0,
-        foregroundColor: VelPasColors.silverPrimary,
+        backgroundColor: ProsToColors.bg0,
+        foregroundColor: ProsToColors.silverPrimary,
         elevation: 0,
       ),
       dividerTheme: const DividerThemeData(
-        color: VelPasColors.divider,
+        color: ProsToColors.divider,
         thickness: 1,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: VelPasColors.bg1,
+        fillColor: ProsToColors.bg1,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: VelPasColors.stroke),
+          borderSide: const BorderSide(color: ProsToColors.stroke),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: VelPasColors.stroke),
+          borderSide: const BorderSide(color: ProsToColors.stroke),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: VelPasColors.champagne),
+          borderSide: const BorderSide(color: ProsToColors.champagne),
         ),
-        labelStyle: const TextStyle(color: VelPasColors.silverSecondary),
-        hintStyle: const TextStyle(color: VelPasColors.silverTertiary),
+        labelStyle: const TextStyle(color: ProsToColors.silverSecondary),
+        hintStyle: const TextStyle(color: ProsToColors.silverTertiary),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: VelPasColors.bg1,
-        indicatorColor: VelPasColors.bg2,
+        backgroundColor: ProsToColors.bg1,
+        indicatorColor: ProsToColors.bg2,
         labelTextStyle: MaterialStateProperty.resolveWith(
           (states) => TextStyle(
             color: states.contains(MaterialState.selected)
-                ? VelPasColors.champagne
-                : VelPasColors.silverSecondary,
+                ? ProsToColors.champagne
+                : ProsToColors.silverSecondary,
             fontWeight: FontWeight.w600,
           ),
         ),
         iconTheme: MaterialStateProperty.resolveWith(
           (states) => IconThemeData(
             color: states.contains(MaterialState.selected)
-                ? VelPasColors.champagne
-                : VelPasColors.silverSecondary,
+                ? ProsToColors.champagne
+                : ProsToColors.silverSecondary,
           ),
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: VelPasColors.bg2,
-        labelStyle: const TextStyle(color: VelPasColors.silverPrimary),
+        backgroundColor: ProsToColors.bg2,
+        labelStyle: const TextStyle(color: ProsToColors.silverPrimary),
         shape: StadiumBorder(
-          side: BorderSide(color: VelPasColors.stroke),
+          side: BorderSide(color: ProsToColors.stroke),
         ),
       ),
     );

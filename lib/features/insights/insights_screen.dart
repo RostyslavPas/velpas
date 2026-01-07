@@ -6,6 +6,7 @@ import '../../core/localization/app_localizations_ext.dart';
 import '../../core/utils/formatters.dart';
 import '../wardrobe/wardrobe_providers.dart';
 import 'insights_providers.dart';
+import '../settings/settings_controller.dart';
 
 class InsightsScreen extends ConsumerWidget {
   const InsightsScreen({super.key});
@@ -15,6 +16,10 @@ class InsightsScreen extends ConsumerWidget {
     final bikesAsync = ref.watch(bikesForInsightsProvider);
     final componentTotalAsync = ref.watch(componentTotalValueProvider);
     final wardrobeTotalsAsync = ref.watch(wardrobeTotalsProvider);
+    final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
+          data: (settings) => settings.currencyCode,
+          orElse: () => 'USD',
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +46,7 @@ class InsightsScreen extends ConsumerWidget {
                         );
                         final totalValue = purchaseTotal + componentTotal;
                         return Text(
-                          Formatters.price(totalValue),
+                          Formatters.price(totalValue, currencyCode: currencyCode),
                           style: Theme.of(context).textTheme.headlineSmall,
                         );
                       },
@@ -56,7 +61,9 @@ class InsightsScreen extends ConsumerWidget {
                           (sum, item) => sum + item.totalValue,
                         );
                         return Text(
-                          context.l10n.totalGearValueLabel(Formatters.price(gearTotal)),
+                          context.l10n.totalGearValueLabel(
+                            Formatters.price(gearTotal, currencyCode: currencyCode),
+                          ),
                         );
                       },
                       loading: () => const Text('...'),
@@ -77,7 +84,15 @@ class InsightsScreen extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 12),
-              ...bikes.map((bike) => _BikeBreakdownCard(bikeId: bike.bike.id, bikeName: bike.bike.name, bikeKm: bike.totalKm, purchasePrice: bike.bike.purchasePrice)),
+              ...bikes.map(
+                (bike) => _BikeBreakdownCard(
+                  bikeId: bike.bike.id,
+                  bikeName: bike.bike.name,
+                  bikeKm: bike.totalKm,
+                  purchasePrice: bike.bike.purchasePrice,
+                  currencyCode: currencyCode,
+                ),
+              ),
             ],
           );
         },
@@ -94,12 +109,14 @@ class _BikeBreakdownCard extends ConsumerWidget {
     required this.bikeName,
     required this.bikeKm,
     required this.purchasePrice,
+    required this.currencyCode,
   });
 
   final int bikeId;
   final String bikeName;
   final int bikeKm;
   final double? purchasePrice;
+  final String currencyCode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -121,7 +138,11 @@ class _BikeBreakdownCard extends ConsumerWidget {
             componentValueAsync.when(
               data: (componentValue) {
                 final total = (purchasePrice ?? 0) + componentValue;
-                return Text(context.l10n.bikeValueLabel(Formatters.price(total)));
+                return Text(
+                  context.l10n.bikeValueLabel(
+                    Formatters.price(total, currencyCode: currencyCode),
+                  ),
+                );
               },
               loading: () => const Text('...'),
               error: (_, __) => const Text('...'),

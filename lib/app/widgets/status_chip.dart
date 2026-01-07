@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/velpas_theme.dart';
+import '../theme/prosto_theme.dart';
 
 enum StatusLevel { ok, watch, danger }
 
@@ -16,11 +16,11 @@ class StatusChip extends StatelessWidget {
   Color get _color {
     switch (level) {
       case StatusLevel.ok:
-        return VelPasColors.ok;
+        return ProsToColors.ok;
       case StatusLevel.watch:
-        return VelPasColors.warn;
+        return ProsToColors.warn;
       case StatusLevel.danger:
-        return VelPasColors.danger;
+        return ProsToColors.danger;
     }
   }
 

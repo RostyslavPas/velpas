@@ -11,6 +11,7 @@ class SettingsState {
     required this.lastSync,
     required this.stravaConnected,
     required this.primaryBikeId,
+    required this.currencyCode,
   });
 
   final Locale? locale;
@@ -19,6 +20,7 @@ class SettingsState {
   final DateTime? lastSync;
   final bool stravaConnected;
   final int? primaryBikeId;
+  final String currencyCode;
 
   SettingsState copyWith({
     Locale? locale,
@@ -27,6 +29,7 @@ class SettingsState {
     DateTime? lastSync,
     bool? stravaConnected,
     int? primaryBikeId,
+    String? currencyCode,
   }) {
     return SettingsState(
       locale: locale ?? this.locale,
@@ -35,6 +38,7 @@ class SettingsState {
       lastSync: lastSync ?? this.lastSync,
       stravaConnected: stravaConnected ?? this.stravaConnected,
       primaryBikeId: primaryBikeId ?? this.primaryBikeId,
+      currencyCode: currencyCode ?? this.currencyCode,
     );
   }
 }
@@ -52,6 +56,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
       lastSync: await storage.getLastSyncAt(),
       stravaConnected: tokens != null,
       primaryBikeId: await storage.getPrimaryBikeId(),
+      currencyCode: await storage.getCurrencyCode(),
     );
   }
 
@@ -105,6 +110,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
           lastSync: null,
           stravaConnected: false,
           primaryBikeId: null,
+          currencyCode: 'USD',
         );
     state = AsyncData(current.copyWith(stravaConnected: true));
   }
@@ -120,6 +126,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
           lastSync: null,
           stravaConnected: false,
           primaryBikeId: null,
+          currencyCode: 'USD',
         );
     state = AsyncData(current.copyWith(stravaConnected: false));
   }
@@ -128,6 +135,12 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     final storage = ref.read(secureStorageServiceProvider);
     await storage.setPrimaryBikeId(value);
     state = AsyncData(state.value!.copyWith(primaryBikeId: value));
+  }
+
+  Future<void> setCurrencyCode(String code) async {
+    final storage = ref.read(secureStorageServiceProvider);
+    await storage.setCurrencyCode(code);
+    state = AsyncData(state.value!.copyWith(currencyCode: code));
   }
 }
 

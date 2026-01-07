@@ -39,6 +39,22 @@ class AboutScreen extends StatelessWidget {
                             context.l10n.appName,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
+                          const SizedBox(height: 4),
+                          Text(
+                            context.l10n.appSubtitle,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            context.l10n.brandSignature,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                          ),
                           const SizedBox(height: 6),
                           Text(context.l10n.versionLabel(version)),
                         ],

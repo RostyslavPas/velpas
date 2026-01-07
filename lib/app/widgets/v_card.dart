@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/velpas_theme.dart';
+import '../theme/prosto_theme.dart';
 
 class VCard extends StatelessWidget {
   const VCard({
@@ -21,7 +21,7 @@ class VCard extends StatelessWidget {
     );
 
     return Material(
-      color: VelPasColors.bg1,
+      color: ProsToColors.bg1,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -29,9 +29,9 @@ class VCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: VelPasColors.stroke),
+            border: Border.all(color: ProsToColors.stroke),
             gradient: const LinearGradient(
-              colors: [VelPasColors.bg1, VelPasColors.bg2],
+              colors: [ProsToColors.bg1, ProsToColors.bg2],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
