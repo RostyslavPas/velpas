@@ -101,19 +101,31 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'VelPas'**
+  /// **'PROS.TO'**
   String get appName;
+
+  /// No description provided for @appSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike components & gear tracker'**
+  String get appSubtitle;
+
+  /// No description provided for @brandSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'by PASUE'**
+  String get brandSignature;
 
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
-  /// **'Ride. Track. Replace on time.'**
+  /// **'Track your bike. Know your gear.'**
   String get tagline;
 
   /// No description provided for @aboutDescription.
   ///
   /// In en, this message translates to:
-  /// **'VelPas is a cycling community app that helps you track bike component mileage, replacements, and your cycling wardrobe. Offline-first, built for reliable maintenance habits and clean gear inventory.'**
+  /// **'PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English & Ukrainian language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components'**
   String get aboutDescription;
 
   /// No description provided for @homeTitle.
@@ -680,6 +692,30 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get languageTitle;
 
+  /// No description provided for @currencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currencyTitle;
+
+  /// No description provided for @currencyUsd.
+  ///
+  /// In en, this message translates to:
+  /// **'US Dollar (\$)'**
+  String get currencyUsd;
+
+  /// No description provided for @currencyEur.
+  ///
+  /// In en, this message translates to:
+  /// **'Euro (€)'**
+  String get currencyEur;
+
+  /// No description provided for @currencyUah.
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian Hryvnia (₴)'**
+  String get currencyUah;
+
   /// No description provided for @primaryBikeTitle.
   ///
   /// In en, this message translates to:
@@ -875,13 +911,13 @@ abstract class AppLocalizations {
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:
-  /// **'VelPas Pro'**
+  /// **'PROS.TO Pro'**
   String get paywallTitle;
 
   /// No description provided for @proTitle.
   ///
   /// In en, this message translates to:
-  /// **'VelPas Pro'**
+  /// **'PROS.TO Pro'**
   String get proTitle;
 
   /// No description provided for @proSubtitle.
@@ -965,7 +1001,7 @@ abstract class AppLocalizations {
   /// No description provided for @unlockTitle.
   ///
   /// In en, this message translates to:
-  /// **'Unlock VelPas'**
+  /// **'Unlock PROS.TO'**
   String get unlockTitle;
 
   /// No description provided for @unlockSubtitle.
@@ -983,7 +1019,7 @@ abstract class AppLocalizations {
   /// No description provided for @unlockReason.
   ///
   /// In en, this message translates to:
-  /// **'Authenticate to unlock VelPas'**
+  /// **'Authenticate to unlock PROS.TO'**
   String get unlockReason;
 
   /// No description provided for @unlockDisableBiometrics.

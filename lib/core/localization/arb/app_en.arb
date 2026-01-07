@@ -1,8 +1,10 @@
 {
   "@@locale": "en",
-  "appName": "VelPas",
-  "tagline": "Ride. Track. Replace on time.",
-  "aboutDescription": "VelPas is a cycling community app that helps you track bike component mileage, replacements, and your cycling wardrobe. Offline-first, built for reliable maintenance habits and clean gear inventory.",
+  "appName": "PROS.TO",
+  "appSubtitle": "Bike components & gear tracker",
+  "brandSignature": "by PASUE",
+  "tagline": "Track your bike. Know your gear.",
+  "aboutDescription": "PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English & Ukrainian language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components",
 
   "homeTitle": "Home",
   "garageTitle": "Garage",
@@ -146,6 +148,10 @@
   },
 
   "languageTitle": "Language",
+  "currencyTitle": "Currency",
+  "currencyUsd": "US Dollar ($)",
+  "currencyEur": "Euro (€)",
+  "currencyUah": "Ukrainian Hryvnia (₴)",
   "primaryBikeTitle": "Primary bike",
   "primaryBikeLabel": "Select primary bike",
   "primaryBikeNone": "No primary bike",
@@ -190,8 +196,8 @@
     "placeholders": {"version": {}}
   },
 
-  "paywallTitle": "VelPas Pro",
-  "proTitle": "VelPas Pro",
+  "paywallTitle": "PROS.TO Pro",
+  "proTitle": "PROS.TO Pro",
   "proSubtitle": "Unlock premium maintenance and sync features.",
   "proBenefitStrava": "Strava sync",
   "proBenefitUnlimited": "Unlimited bikes & components",
@@ -207,9 +213,9 @@
   "otpLabel": "Code",
   "continueLabel": "Continue",
 
-  "unlockTitle": "Unlock VelPas",
+  "unlockTitle": "Unlock PROS.TO",
   "unlockSubtitle": "Use biometrics to continue",
   "unlockAction": "Unlock",
-  "unlockReason": "Authenticate to unlock VelPas",
+  "unlockReason": "Authenticate to unlock PROS.TO",
   "unlockDisableBiometrics": "Disable biometrics"
 }

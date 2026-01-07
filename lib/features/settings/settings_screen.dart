@@ -57,6 +57,40 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               VCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.currencyTitle,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: settings.currencyCode,
+                      items: [
+                        DropdownMenuItem(
+                          value: 'USD',
+                          child: Text(context.l10n.currencyUsd),
+                        ),
+                        DropdownMenuItem(
+                          value: 'EUR',
+                          child: Text(context.l10n.currencyEur),
+                        ),
+                        DropdownMenuItem(
+                          value: 'UAH',
+                          child: Text(context.l10n.currencyUah),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) return;
+                        ref.read(settingsControllerProvider.notifier).setCurrencyCode(value);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              VCard(
                 child: bikesAsync.when(
                   data: (bikes) {
                     if (bikes.isEmpty) {

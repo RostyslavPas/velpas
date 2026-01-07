@@ -10,6 +10,7 @@ import '../../core/utils/component_utils.dart';
 import '../../core/utils/formatters.dart';
 import '../garage/garage_providers.dart';
 import 'component_providers.dart';
+import '../settings/settings_controller.dart';
 
 class ComponentDetailScreen extends ConsumerWidget {
   const ComponentDetailScreen({super.key, required this.componentId});
@@ -19,6 +20,10 @@ class ComponentDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final componentAsync = ref.watch(componentByIdProvider(componentId));
+    final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
+          data: (settings) => settings.currencyCode,
+          orElse: () => 'USD',
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -119,7 +124,12 @@ class ComponentDetailScreen extends ConsumerWidget {
                                 subtitle: Text(Formatters.dateTime(item.removedAt)),
                                 trailing: item.price == null
                                     ? null
-                                    : Text(Formatters.price(item.price!)),
+                                    : Text(
+                                        Formatters.price(
+                                          item.price!,
+                                          currencyCode: currencyCode,
+                                        ),
+                                      ),
                               ),
                             )
                             .toList(),

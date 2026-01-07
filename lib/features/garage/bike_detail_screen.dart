@@ -14,6 +14,7 @@ import '../../core/utils/component_utils.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/component_models.dart';
 import 'garage_providers.dart';
+import '../settings/settings_controller.dart';
 
 class BikeDetailScreen extends ConsumerWidget {
   const BikeDetailScreen({super.key, required this.bikeId});
@@ -24,6 +25,10 @@ class BikeDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bikeAsync = ref.watch(bikeByIdProvider(bikeId));
     final componentsAsync = ref.watch(componentsForBikeProvider(bikeId));
+    final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
+          data: (settings) => settings.currencyCode,
+          orElse: () => 'USD',
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -48,6 +53,7 @@ class BikeDetailScreen extends ConsumerWidget {
                 totalKm: bike.totalKm,
                 price: bike.bike.purchasePrice,
                 photoPath: bike.bike.photoPath,
+                currencyCode: currencyCode,
               ),
               const SizedBox(height: 16),
               Row(
@@ -163,12 +169,14 @@ class _BikeHeader extends StatelessWidget {
     required this.totalKm,
     required this.price,
     this.photoPath,
+    required this.currencyCode,
   });
 
   final String bikeName;
   final int totalKm;
   final double? price;
   final String? photoPath;
+  final String currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +210,11 @@ class _BikeHeader extends StatelessWidget {
                 Text(context.l10n.totalKmLabel(Formatters.km(totalKm))),
                 if (price != null) ...[
                   const SizedBox(height: 4),
-                  Text(context.l10n.purchasePriceLabel(Formatters.price(price!))),
+                  Text(
+                    context.l10n.purchasePriceLabel(
+                      Formatters.price(price!, currencyCode: currencyCode),
+                    ),
+                  ),
                 ],
               ],
             ),

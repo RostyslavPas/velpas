@@ -6,6 +6,7 @@ import '../../core/providers.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/wardrobe_models.dart';
 import 'wardrobe_providers.dart';
+import '../settings/settings_controller.dart';
 
 class WardrobeCategoryScreen extends ConsumerWidget {
   const WardrobeCategoryScreen({super.key, required this.category});
@@ -15,6 +16,10 @@ class WardrobeCategoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemsAsync = ref.watch(wardrobeItemsProvider(category));
+    final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
+          data: (settings) => settings.currencyCode,
+          orElse: () => 'USD',
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +47,12 @@ class WardrobeCategoryScreen extends ConsumerWidget {
                 subtitle: Text(context.l10n.itemQuantity(item.quantity)),
                 trailing: item.price == null
                     ? null
-                    : Text(Formatters.price(item.price! * item.quantity)),
+                    : Text(
+                        Formatters.price(
+                          item.price! * item.quantity,
+                          currencyCode: currencyCode,
+                        ),
+                      ),
                 onTap: () => _showForm(context, ref, item: item),
               );
             },

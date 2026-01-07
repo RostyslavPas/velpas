@@ -15,6 +15,7 @@ class SecureStorageService {
   static const _keyLastSync = 'last_sync_iso';
   static const _keyStravaConnected = 'strava_connected';
   static const _keyPrimaryBikeId = 'primary_bike_id';
+  static const _keyCurrencyCode = 'currency_code';
   static const _keyStravaAccessToken = 'strava_access_token';
   static const _keyStravaRefreshToken = 'strava_refresh_token';
   static const _keyStravaExpiresAt = 'strava_expires_at';
@@ -125,6 +126,15 @@ class SecureStorageService {
 
   Future<void> setPrimaryBikeId(int? value) async {
     await _write(_keyPrimaryBikeId, value?.toString());
+  }
+
+  Future<String> getCurrencyCode() async {
+    final value = await _read(_keyCurrencyCode);
+    return value ?? 'USD';
+  }
+
+  Future<void> setCurrencyCode(String code) async {
+    await _write(_keyCurrencyCode, code);
   }
 
   Future<String?> _read(String key) async {

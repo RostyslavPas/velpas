@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/theme/velpas_theme.dart';
+import '../../app/theme/prosto_theme.dart';
 import '../../app/widgets/v_card.dart';
 import '../../core/localization/app_localizations_ext.dart';
 import '../settings/settings_controller.dart';
@@ -36,7 +36,7 @@ class PaywallScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: VelPasColors.champagneDeep),
+                    border: Border.all(color: ProsToColors.champagneDeep),
                   ),
                   child: Row(
                     children: [
@@ -85,7 +85,7 @@ class _BenefitRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, color: VelPasColors.champagne),
+          const Icon(Icons.check_circle, color: ProsToColors.champagne),
           const SizedBox(width: 8),
           Expanded(child: Text(text)),
         ],

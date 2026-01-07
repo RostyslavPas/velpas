@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/localization/app_localizations_ext.dart';
 import '../../core/providers.dart';
-import '../../app/theme/velpas_theme.dart';
+import '../../app/theme/prosto_theme.dart';
 import '../settings/settings_controller.dart';
 
 class BiometricGate extends ConsumerStatefulWidget {
@@ -85,12 +85,12 @@ class _BiometricGateState extends ConsumerState<BiometricGate> {
     }
 
     return Scaffold(
-      backgroundColor: VelPasColors.bg0,
+      backgroundColor: ProsToColors.bg0,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.lock, size: 56, color: VelPasColors.champagne),
+            const Icon(Icons.lock, size: 56, color: ProsToColors.champagne),
             const SizedBox(height: 16),
             Text(
               context.l10n.unlockTitle,

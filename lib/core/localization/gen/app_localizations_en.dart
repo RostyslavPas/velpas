@@ -9,14 +9,20 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'VelPas';
+  String get appName => 'PROS.TO';
 
   @override
-  String get tagline => 'Ride. Track. Replace on time.';
+  String get appSubtitle => 'Bike components & gear tracker';
+
+  @override
+  String get brandSignature => 'by PASUE';
+
+  @override
+  String get tagline => 'Track your bike. Know your gear.';
 
   @override
   String get aboutDescription =>
-      'VelPas is a cycling community app that helps you track bike component mileage, replacements, and your cycling wardrobe. Offline-first, built for reliable maintenance habits and clean gear inventory.';
+      'PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English & Ukrainian language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components';
 
   @override
   String get homeTitle => 'Home';
@@ -329,6 +335,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageTitle => 'Language';
 
   @override
+  String get currencyTitle => 'Currency';
+
+  @override
+  String get currencyUsd => 'US Dollar (\$)';
+
+  @override
+  String get currencyEur => 'Euro (€)';
+
+  @override
+  String get currencyUah => 'Ukrainian Hryvnia (₴)';
+
+  @override
   String get primaryBikeTitle => 'Primary bike';
 
   @override
@@ -430,10 +448,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get paywallTitle => 'VelPas Pro';
+  String get paywallTitle => 'PROS.TO Pro';
 
   @override
-  String get proTitle => 'VelPas Pro';
+  String get proTitle => 'PROS.TO Pro';
 
   @override
   String get proSubtitle => 'Unlock premium maintenance and sync features.';
@@ -475,7 +493,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueLabel => 'Continue';
 
   @override
-  String get unlockTitle => 'Unlock VelPas';
+  String get unlockTitle => 'Unlock PROS.TO';
 
   @override
   String get unlockSubtitle => 'Use biometrics to continue';
@@ -484,7 +502,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unlockAction => 'Unlock';
 
   @override
-  String get unlockReason => 'Authenticate to unlock VelPas';
+  String get unlockReason => 'Authenticate to unlock PROS.TO';
 
   @override
   String get unlockDisableBiometrics => 'Disable biometrics';

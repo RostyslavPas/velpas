@@ -17,7 +17,7 @@ class AppBootstrap extends ConsumerWidget {
     final init = ref.watch(appInitProvider);
 
     return init.when(
-      data: (_) => const VelPasApp(),
+      data: (_) => const ProsToApp(),
       loading: () => const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(

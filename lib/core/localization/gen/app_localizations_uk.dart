@@ -9,14 +9,20 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
-  String get appName => 'VelPas';
+  String get appName => 'PROS.TO';
 
   @override
-  String get tagline => 'Катай. Трекни. Міняй вчасно.';
+  String get appSubtitle => 'Трекер компонентів та екіпірування';
+
+  @override
+  String get brandSignature => 'by PASUE';
+
+  @override
+  String get tagline => 'Контроль велосипеда та екіпірування.';
 
   @override
   String get aboutDescription =>
-      'VelPas — це застосунок для велоспільноти: облік пробігу компонентів, історії замін і гардероба. Працює офлайн та допомагає вчасно обслуговувати байк і спорядження.';
+      'PROS.TO — це преміальний застосунок для велосипедистів, які дбають про свою техніку.\nТрекай пробіг і знос кожного компонента, зберігай історію замін і розумій реальну вартість свого сетапу.\nТемний мінімалістичний інтерфейс із теплими металевими акцентами створений для зручності та фокусу.\n\nОсновні можливості:\n• Гараж велосипедів із фото та вартістю\n• Трекінг пробігу і зносу компонентів\n• Історія замін та аналіз витрат\n• Гардероб екіпірування (шоломи, велотуфлі, форма тощо)\n• Робота офлайн\n• Захист через Face ID / Touch ID\n• Англійська та українська мови\n\nPROS.TO Pro:\n• Синхронізація зі Strava (автоматичний пробіг)\n• Необмежено велосипедів і компонентів';
 
   @override
   String get homeTitle => 'Головна';
@@ -329,6 +335,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get languageTitle => 'Мова';
 
   @override
+  String get currencyTitle => 'Валюта';
+
+  @override
+  String get currencyUsd => 'Долар США (\$)';
+
+  @override
+  String get currencyEur => 'Євро (€)';
+
+  @override
+  String get currencyUah => 'Гривня (₴)';
+
+  @override
   String get primaryBikeTitle => 'Основний велосипед';
 
   @override
@@ -432,10 +450,10 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get paywallTitle => 'VelPas Pro';
+  String get paywallTitle => 'PROS.TO Pro';
 
   @override
-  String get proTitle => 'VelPas Pro';
+  String get proTitle => 'PROS.TO Pro';
 
   @override
   String get proSubtitle => 'Відкрийте преміум-функції та синхронізацію.';
@@ -477,7 +495,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get continueLabel => 'Продовжити';
 
   @override
-  String get unlockTitle => 'Розблокувати VelPas';
+  String get unlockTitle => 'Розблокувати PROS.TO';
 
   @override
   String get unlockSubtitle => 'Використайте біометрію для входу';
@@ -486,7 +504,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get unlockAction => 'Розблокувати';
 
   @override
-  String get unlockReason => 'Підтвердіть особу, щоб розблокувати VelPas';
+  String get unlockReason => 'Підтвердіть особу, щоб розблокувати PROS.TO';
 
   @override
   String get unlockDisableBiometrics => 'Вимкнути біометрію';
