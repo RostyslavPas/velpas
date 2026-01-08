@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -66,7 +67,12 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
               return Form(
                 key: _formKey,
                 child: ListView(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    16,
+                    16,
+                    16 + MediaQuery.of(context).viewInsets.bottom,
+                  ),
                   children: [
                     Text(
                       context.l10n.removalKmLabel,
@@ -76,6 +82,7 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                     TextFormField(
                       controller: _removedKmController,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         labelText: context.l10n.currentBikeKmLabel(Formatters.km(bike.totalKm)),
                       ),
@@ -125,6 +132,7 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                     TextFormField(
                       controller: _lifeController,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(labelText: context.l10n.expectedLifeLabel),
                     ),
                     const SizedBox(height: 12),
@@ -137,8 +145,8 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                     ElevatedButton(
                       onPressed: () async {
                         if (!_formKey.currentState!.validate()) return;
-                        final removedKm = int.parse(_removedKmController.text);
-                        final expected = int.tryParse(_lifeController.text) ??
+                        final removedKm = _parseInt(_removedKmController.text) ?? bike.totalKm;
+                        final expected = _parseInt(_lifeController.text) ??
                             ComponentDefaults.expectedLifeKm(
                               componentType,
                             );
@@ -176,4 +184,10 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
       ),
     );
   }
+}
+
+int? _parseInt(String value) {
+  final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+  if (cleaned.isEmpty) return null;
+  return int.tryParse(cleaned);
 }

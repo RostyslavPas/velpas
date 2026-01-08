@@ -99,6 +99,26 @@ class ComponentDao {
         .map((row) => row.read<double>('total_value'));
   }
 
+  Future<int> countComponentsByBikeModels(int bikeId, List<String> models) async {
+    if (models.isEmpty) return 0;
+    final placeholders = List.filled(models.length, '?').join(',');
+    final sql = '''
+      SELECT COUNT(*) AS matches
+      FROM components
+      WHERE bike_id = ? AND model IN ($placeholders)
+    ''';
+    final variables = <Variable<Object>>[
+      Variable<int>(bikeId),
+      ...models.map((model) => Variable<String>(model)),
+    ];
+    final row = await _db.customSelect(
+      sql,
+      variables: variables,
+      readsFrom: {_db.componentsTable},
+    ).getSingle();
+    return row.read<int>('matches');
+  }
+
   Future<List<ComponentWearSnapshot>> fetchActiveWearSnapshots({int? bikeId}) async {
     final buffer = StringBuffer()
       ..writeln('SELECT c.*, b.name AS bike_name,')

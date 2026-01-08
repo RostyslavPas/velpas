@@ -72,6 +72,22 @@ class RealStravaService implements StravaService {
     }
 
     final after = await storage.getLastSyncAt();
+    final bikes = await bikeRepository.fetchAllBikes();
+    Bike? currentBike;
+    for (final bike in bikes) {
+      if (bike.id == bikeId) {
+        currentBike = bike;
+        break;
+      }
+    }
+    if (currentBike != null &&
+        currentBike.stravaGearId != null &&
+        currentBike.manualKm > 0) {
+      final rideCount = await rideRepository.countRides(bikeId);
+      if (rideCount == 0) {
+        await bikeRepository.updateManualKm(bikeId, 0);
+      }
+    }
     final activities = await _fetchActivities(activeTokens, after);
     if (activities.isEmpty) {
       return SyncResult(added: 0, totalDistanceKm: 0);
@@ -139,25 +155,10 @@ class RealStravaService implements StravaService {
           .toList();
       if (existingByGear.isNotEmpty) {
         final existing = existingByGear.first;
-        if (existing.manualKm == 0 && stravaBike.distanceKm > 0) {
+        if (existing.manualKm > 0) {
           final rideCount = await rideRepository.countRides(existing.id);
-          if (rideCount == 0) {
-            await bikeRepository.updateManualKm(
-              existing.id,
-              stravaBike.distanceKm,
-            );
-            final index = localBikes.indexOf(existing);
-            if (index != -1) {
-              localBikes[index] = Bike(
-                id: existing.id,
-                name: existing.name,
-                manualKm: stravaBike.distanceKm,
-                createdAt: existing.createdAt,
-                purchasePrice: existing.purchasePrice,
-                photoPath: existing.photoPath,
-                stravaGearId: existing.stravaGearId,
-              );
-            }
+          if (rideCount > 0) {
+            await bikeRepository.updateManualKm(existing.id, 0);
           }
         }
         skipped += 1;
@@ -179,15 +180,10 @@ class RealStravaService implements StravaService {
           nameMatch.id,
           stravaBike.gearId,
         );
-        var updatedManualKm = nameMatch.manualKm;
-        if (nameMatch.manualKm == 0 && stravaBike.distanceKm > 0) {
+        if (nameMatch.manualKm > 0) {
           final rideCount = await rideRepository.countRides(nameMatch.id);
-          if (rideCount == 0) {
-            await bikeRepository.updateManualKm(
-              nameMatch.id,
-              stravaBike.distanceKm,
-            );
-            updatedManualKm = stravaBike.distanceKm;
+          if (rideCount > 0) {
+            await bikeRepository.updateManualKm(nameMatch.id, 0);
           }
         }
         final index = localBikes.indexOf(nameMatch);
@@ -195,7 +191,7 @@ class RealStravaService implements StravaService {
           localBikes[index] = Bike(
             id: nameMatch.id,
             name: nameMatch.name,
-            manualKm: updatedManualKm,
+            manualKm: nameMatch.manualKm > 0 ? 0 : nameMatch.manualKm,
             createdAt: nameMatch.createdAt,
             purchasePrice: nameMatch.purchasePrice,
             photoPath: nameMatch.photoPath,
@@ -209,7 +205,7 @@ class RealStravaService implements StravaService {
       final newId = await bikeRepository.addBike(
         name: stravaBike.name,
         stravaGearId: stravaBike.gearId,
-        manualKm: stravaBike.distanceKm,
+        manualKm: 0,
       );
       localBikes.add(
         Bike(
@@ -277,21 +273,36 @@ class RealStravaService implements StravaService {
 
   Future<List<StravaActivity>> _fetchActivities(StravaTokens tokens, DateTime? after) async {
     try {
-      return await apiClient.fetchActivities(
-        accessToken: tokens.accessToken,
-        after: after,
-      );
+      return await _fetchAllActivities(tokens, after);
     } on DioException catch (error) {
       final status = error.response?.statusCode ?? 0;
       if (status == 401 || status == 403) {
         final refreshed = await _refreshTokens(tokens);
-        return apiClient.fetchActivities(
-          accessToken: refreshed.accessToken,
-          after: after,
-        );
+        return _fetchAllActivities(refreshed, after);
       }
       rethrow;
     }
+  }
+
+  Future<List<StravaActivity>> _fetchAllActivities(
+    StravaTokens tokens,
+    DateTime? after,
+  ) async {
+    const perPage = 200;
+    const maxPages = 20;
+    final all = <StravaActivity>[];
+    for (var page = 1; page <= maxPages; page += 1) {
+      final batch = await apiClient.fetchActivities(
+        accessToken: tokens.accessToken,
+        after: after,
+        perPage: perPage,
+        page: page,
+      );
+      if (batch.isEmpty) break;
+      all.addAll(batch);
+      if (batch.length < perPage) break;
+    }
+    return all;
   }
 
   Future<StravaTokens> _refreshTokens(StravaTokens tokens) async {

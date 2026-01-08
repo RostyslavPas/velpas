@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -177,6 +178,7 @@ class BikeDetailScreen extends ConsumerWidget {
   ) {
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
       builder: (context) {
@@ -412,9 +414,10 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
   @override
   Widget build(BuildContext context) {
     final isOther = _type == ComponentType.other;
+    final viewInsets = MediaQuery.of(context).viewInsets;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + viewInsets.bottom),
       child: ListView(
         shrinkWrap: true,
         children: [
@@ -460,6 +463,7 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
           TextField(
             controller: _lifeController,
             keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(labelText: context.l10n.expectedLifeLabel),
           ),
           const SizedBox(height: 12),
@@ -483,7 +487,7 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
               final brand = _brandController.text.trim();
               final model = _modelController.text.trim();
               if (brand.isEmpty || (!isOther && model.isEmpty)) return;
-              final expected = int.tryParse(_lifeController.text) ??
+              final expected = _parseInt(_lifeController.text) ??
                   ComponentDefaults.expectedLifeKm(_type);
               final price = double.tryParse(_priceController.text.trim());
               await ref.read(componentRepositoryProvider).addComponent(
@@ -511,4 +515,10 @@ void _showProRequired(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text(context.l10n.proRequiredMessage)),
   );
+}
+
+int? _parseInt(String value) {
+  final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+  if (cleaned.isEmpty) return null;
+  return int.tryParse(cleaned);
 }

@@ -104,6 +104,7 @@ class WardrobeCategoryScreen extends ConsumerWidget {
   void _showForm(BuildContext context, WidgetRef ref, {WardrobeItem? item}) {
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
       builder: (context) => _WardrobeItemForm(
@@ -159,7 +160,12 @@ class _WardrobeItemFormState extends ConsumerState<_WardrobeItemForm> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        16,
+        16,
+        16 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: ListView(
         shrinkWrap: true,
         children: [

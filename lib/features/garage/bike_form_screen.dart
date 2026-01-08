@@ -55,10 +55,11 @@ class _BikeFormScreenState extends ConsumerState<BikeFormScreen> {
             _photoPath = bike.bike.photoPath;
           }
 
+          final viewInsets = MediaQuery.of(context).viewInsets;
           return Form(
             key: _formKey,
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + viewInsets.bottom),
               children: [
                 _PhotoPicker(
                   photoPath: _photoPath,

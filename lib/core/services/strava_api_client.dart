@@ -10,11 +10,13 @@ class StravaApiClient {
     required String accessToken,
     DateTime? after,
     int perPage = 50,
+    int page = 1,
   }) async {
     final response = await _dio.get<List<dynamic>>(
       '/athlete/activities',
       queryParameters: {
         'per_page': perPage,
+        'page': page,
         if (after != null) 'after': after.millisecondsSinceEpoch ~/ 1000,
       },
       options: Options(
