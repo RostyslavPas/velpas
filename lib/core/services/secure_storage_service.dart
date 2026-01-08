@@ -10,6 +10,7 @@ class SecureStorageService {
   bool _secureAvailable = true;
 
   static const _keyPro = 'pro_status';
+  static const _keyHadPro = 'had_pro';
   static const _keyLocale = 'selected_locale';
   static const _keyBiometrics = 'biometrics_enabled';
   static const _keyLastSync = 'last_sync_iso';
@@ -29,6 +30,15 @@ class SecureStorageService {
 
   Future<void> setProStatus(bool value) async {
     await _write(_keyPro, value.toString());
+  }
+
+  Future<bool> getHadPro() async {
+    final value = await _read(_keyHadPro);
+    return value == 'true';
+  }
+
+  Future<void> setHadPro(bool value) async {
+    await _write(_keyHadPro, value.toString());
   }
 
   Future<String?> getLocaleCode() async {

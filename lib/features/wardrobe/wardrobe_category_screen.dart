@@ -16,6 +16,8 @@ class WardrobeCategoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemsAsync = ref.watch(wardrobeItemsProvider(category));
+    final settings = ref.watch(settingsControllerProvider).value;
+    final isPro = settings?.isPro ?? false;
     final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
           data: (settings) => settings.currencyCode,
           orElse: () => 'USD',
@@ -26,7 +28,13 @@ class WardrobeCategoryScreen extends ConsumerWidget {
         title: Text(_categoryLabel(context, category)),
         actions: [
           IconButton(
-            onPressed: () => _showForm(context, ref),
+            onPressed: () {
+              if (isPro) {
+                _showForm(context, ref);
+                return;
+              }
+              _showProRequired(context);
+            },
             icon: const Icon(Icons.add),
           ),
         ],
@@ -53,7 +61,13 @@ class WardrobeCategoryScreen extends ConsumerWidget {
                           currencyCode: currencyCode,
                         ),
                       ),
-                onTap: () => _showForm(context, ref, item: item),
+                onTap: () {
+                  if (isPro) {
+                    _showForm(context, ref, item: item);
+                    return;
+                  }
+                  _showProRequired(context);
+                },
               );
             },
           );
@@ -98,6 +112,12 @@ class WardrobeCategoryScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+void _showProRequired(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(context.l10n.proRequiredMessage)),
+  );
 }
 
 class _WardrobeItemForm extends ConsumerStatefulWidget {

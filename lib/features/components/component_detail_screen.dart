@@ -20,6 +20,8 @@ class ComponentDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final componentAsync = ref.watch(componentByIdProvider(componentId));
+    final settings = ref.watch(settingsControllerProvider).value;
+    final canReplace = settings != null && (settings.isPro || !settings.hadPro);
     final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
           data: (settings) => settings.currencyCode,
           orElse: () => 'USD',
@@ -99,7 +101,9 @@ class ComponentDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => context.push('/components/${component.id}/replace'),
+                    onPressed: canReplace
+                        ? () => context.push('/components/${component.id}/replace')
+                        : null,
                     child: Text(context.l10n.replaceComponent),
                   ),
                   const SizedBox(height: 24),
@@ -116,21 +120,41 @@ class ComponentDetailScreen extends ConsumerWidget {
                       return Column(
                         children: history
                             .map(
-                              (item) => ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(context.l10n.removedAtKm(
-                                  Formatters.km(item.removedAtBikeKm),
-                                )),
-                                subtitle: Text(Formatters.dateTime(item.removedAt)),
-                                trailing: item.price == null
-                                    ? null
-                                    : Text(
-                                        Formatters.price(
-                                          item.price!,
-                                          currencyCode: currencyCode,
+                              (item) {
+                                final name = [
+                                  item.componentBrand,
+                                  item.componentModel,
+                                ].where((value) => value != null && value!.isNotEmpty).join(' ');
+                                final titleText = name.isEmpty
+                                    ? context.l10n.removedAtKm(
+                                        Formatters.km(item.removedAtBikeKm),
+                                      )
+                                    : name;
+                                return ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(titleText),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (name.isNotEmpty)
+                                        Text(
+                                          context.l10n.removedAtKm(
+                                            Formatters.km(item.removedAtBikeKm),
+                                          ),
                                         ),
-                                      ),
-                              ),
+                                      Text(Formatters.dateTime(item.removedAt)),
+                                    ],
+                                  ),
+                                  trailing: item.price == null
+                                      ? null
+                                      : Text(
+                                          Formatters.price(
+                                            item.price!,
+                                            currencyCode: currencyCode,
+                                          ),
+                                        ),
+                                );
+                              },
                             )
                             .toList(),
                       );

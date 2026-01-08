@@ -8,6 +8,7 @@ class SettingsState {
     required this.locale,
     required this.biometricsEnabled,
     required this.isPro,
+    required this.hadPro,
     required this.lastSync,
     required this.stravaConnected,
     required this.primaryBikeId,
@@ -17,6 +18,7 @@ class SettingsState {
   final Locale? locale;
   final bool biometricsEnabled;
   final bool isPro;
+  final bool hadPro;
   final DateTime? lastSync;
   final bool stravaConnected;
   final int? primaryBikeId;
@@ -26,6 +28,7 @@ class SettingsState {
     Locale? locale,
     bool? biometricsEnabled,
     bool? isPro,
+    bool? hadPro,
     DateTime? lastSync,
     bool? stravaConnected,
     int? primaryBikeId,
@@ -35,6 +38,7 @@ class SettingsState {
       locale: locale ?? this.locale,
       biometricsEnabled: biometricsEnabled ?? this.biometricsEnabled,
       isPro: isPro ?? this.isPro,
+      hadPro: hadPro ?? this.hadPro,
       lastSync: lastSync ?? this.lastSync,
       stravaConnected: stravaConnected ?? this.stravaConnected,
       primaryBikeId: primaryBikeId ?? this.primaryBikeId,
@@ -53,6 +57,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
       locale: localeCode == null ? const Locale('en') : Locale(localeCode),
       biometricsEnabled: await storage.getBiometricsEnabled(),
       isPro: await storage.getProStatus(),
+      hadPro: await storage.getHadPro(),
       lastSync: await storage.getLastSyncAt(),
       stravaConnected: tokens != null,
       primaryBikeId: await storage.getPrimaryBikeId(),
@@ -76,12 +81,16 @@ class SettingsController extends AsyncNotifier<SettingsState> {
   Future<void> setPro(bool isPro) async {
     final storage = ref.read(secureStorageServiceProvider);
     await storage.setProStatus(isPro);
+    if (isPro) {
+      await storage.setHadPro(true);
+    }
     if (!isPro) {
       await storage.clearStravaTokens();
     }
     state = AsyncData(
       state.value!.copyWith(
         isPro: isPro,
+        hadPro: isPro ? true : state.value!.hadPro,
         stravaConnected: isPro ? state.value!.stravaConnected : false,
       ),
     );
@@ -104,13 +113,14 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     await storage.setStravaTokens(tokens);
     final current = state.value ??
         SettingsState(
-          locale: const Locale('en'),
-          biometricsEnabled: false,
-          isPro: false,
-          lastSync: null,
-          stravaConnected: false,
-          primaryBikeId: null,
-          currencyCode: 'USD',
+      locale: const Locale('en'),
+      biometricsEnabled: false,
+      isPro: false,
+      hadPro: false,
+      lastSync: null,
+      stravaConnected: false,
+      primaryBikeId: null,
+      currencyCode: 'USD',
         );
     state = AsyncData(current.copyWith(stravaConnected: true));
   }
@@ -120,13 +130,14 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     await storage.clearStravaTokens();
     final current = state.value ??
         SettingsState(
-          locale: const Locale('en'),
-          biometricsEnabled: false,
-          isPro: false,
-          lastSync: null,
-          stravaConnected: false,
-          primaryBikeId: null,
-          currencyCode: 'USD',
+      locale: const Locale('en'),
+      biometricsEnabled: false,
+      isPro: false,
+      hadPro: false,
+      lastSync: null,
+      stravaConnected: false,
+      primaryBikeId: null,
+      currencyCode: 'USD',
         );
     state = AsyncData(current.copyWith(stravaConnected: false));
   }

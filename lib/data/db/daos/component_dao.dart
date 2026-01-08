@@ -37,12 +37,14 @@ class ComponentDao {
     return _db
         .customSelect(
           '''
-          SELECT * FROM component_history
-          WHERE component_id = ?
+          SELECT h.*, c.brand AS component_brand, c.model AS component_model
+          FROM component_history h
+          INNER JOIN components c ON c.id = h.component_id
+          WHERE h.component_id = ?
           ORDER BY removed_at DESC
           ''',
           variables: [Variable<int>(componentId)],
-          readsFrom: {_db.componentHistoryTable},
+          readsFrom: {_db.componentHistoryTable, _db.componentsTable},
         )
         .watch()
         .map((rows) => rows.map(_mapHistory).toList());
@@ -55,7 +57,8 @@ class ComponentDao {
     return _db
         .customSelect(
           '''
-          SELECT h.* FROM component_history h
+          SELECT h.*, c.brand AS component_brand, c.model AS component_model
+          FROM component_history h
           INNER JOIN components c ON c.id = h.component_id
           WHERE h.bike_id = ? AND c.type = ?
           ORDER BY h.removed_at DESC
@@ -94,6 +97,42 @@ class ComponentDao {
         )
         .watchSingle()
         .map((row) => row.read<double>('total_value'));
+  }
+
+  Future<List<ComponentWearSnapshot>> fetchActiveWearSnapshots({int? bikeId}) async {
+    final buffer = StringBuffer()
+      ..writeln('SELECT c.*, b.name AS bike_name,')
+      ..writeln('  (b.manual_km + COALESCE(r.total_km, 0)) AS bike_km')
+      ..writeln('FROM components c')
+      ..writeln('INNER JOIN bikes b ON b.id = c.bike_id')
+      ..writeln('LEFT JOIN (')
+      ..writeln('  SELECT bike_id, SUM(distance_km) AS total_km')
+      ..writeln('  FROM ride_imports')
+      ..writeln('  GROUP BY bike_id')
+      ..writeln(') r ON r.bike_id = b.id')
+      ..writeln('WHERE c.is_active = 1');
+
+    final variables = <Variable<Object>>[];
+    if (bikeId != null) {
+      buffer.writeln('AND c.bike_id = ?');
+      variables.add(Variable<int>(bikeId));
+    }
+
+    final rows = await _db.customSelect(
+      buffer.toString(),
+      variables: variables,
+      readsFrom: {_db.componentsTable, _db.bikesTable, _db.rideImportsTable},
+    ).get();
+
+    return rows
+        .map(
+          (row) => ComponentWearSnapshot(
+            component: _mapComponent(row),
+            bikeName: row.read<String>('bike_name'),
+            bikeKm: row.read<int>('bike_km'),
+          ),
+        )
+        .toList();
   }
 
   Future<int> insertComponent({
@@ -154,7 +193,7 @@ class ComponentDao {
     );
   }
 
-  Future<void> replaceComponent({
+  Future<int> replaceComponent({
     required ComponentItem oldComponent,
     required int removedAtBikeKm,
     required DateTime removedAt,
@@ -164,7 +203,7 @@ class ComponentDao {
     double? newPrice,
     String? newNotes,
   }) async {
-    await _db.transaction(() async {
+    return _db.transaction(() async {
       await _db.customUpdate(
         'UPDATE components SET is_active = 0 WHERE id = ?',
         variables: [Variable<int>(oldComponent.id)],
@@ -189,7 +228,7 @@ class ComponentDao {
         updates: {_db.componentHistoryTable},
       );
 
-      await _db.customInsert(
+      final newComponentId = await _db.customInsert(
         '''
         INSERT INTO components (
           bike_id, type, brand, model, expected_life_km,
@@ -209,6 +248,7 @@ class ComponentDao {
         ],
         updates: {_db.componentsTable},
       );
+      return newComponentId;
     });
   }
 
@@ -236,6 +276,8 @@ class ComponentDao {
       removedAt: DateTime.parse(row.read<String>('removed_at')),
       price: row.read<double?>('price'),
       notes: row.read<String?>('notes'),
+      componentBrand: row.read<String>('component_brand'),
+      componentModel: row.read<String>('component_model'),
     );
   }
 }

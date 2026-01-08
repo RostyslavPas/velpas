@@ -33,6 +33,8 @@ class ComponentHistoryItem {
     required this.removedAt,
     this.price,
     this.notes,
+    this.componentBrand,
+    this.componentModel,
   });
 
   final int id;
@@ -42,4 +44,18 @@ class ComponentHistoryItem {
   final DateTime removedAt;
   final double? price;
   final String? notes;
+  final String? componentBrand;
+  final String? componentModel;
+}
+
+class ComponentWearSnapshot {
+  ComponentWearSnapshot({
+    required this.component,
+    required this.bikeName,
+    required this.bikeKm,
+  });
+
+  final ComponentItem component;
+  final String bikeName;
+  final int bikeKm;
 }

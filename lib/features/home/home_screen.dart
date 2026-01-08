@@ -14,26 +14,43 @@ import '../../data/models/bike_models.dart';
 import '../settings/settings_controller.dart';
 import 'home_providers.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  bool _checkedAlerts = false;
+  bool _isSyncing = false;
+
+  @override
+  Widget build(BuildContext context) {
     final bikesAsync = ref.watch(bikesStreamProvider);
     final settingsAsync = ref.watch(settingsControllerProvider);
-    final primaryBikeId = settingsAsync.maybeWhen(
-      data: (settings) => settings.primaryBikeId,
-      orElse: () => null,
-    );
+    final settings = settingsAsync.value;
+    final isLimited = settings != null && !settings.isPro;
+    settingsAsync.whenData((settings) {
+      if (_checkedAlerts || !settings.isPro) return;
+      _checkedAlerts = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ref.read(maintenanceAlertServiceProvider).checkAlerts(context);
+      });
+    });
+    final primaryBikeId = settings?.primaryBikeId;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.homeTitle),
         actions: [
           IconButton(
-            onPressed: () => _showReplacePicker(context),
-            icon: const Icon(Icons.swap_horiz),
-            tooltip: context.l10n.addReplacement,
+            onPressed: settings?.isPro == true
+                ? () => _showAlertsSheet(context)
+                : () => context.push('/paywall'),
+            icon: const Icon(Icons.notifications_active),
+            tooltip: context.l10n.alertsTitle,
           ),
         ],
       ),
@@ -41,63 +58,156 @@ class HomeScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           VCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                Text(
-                  context.l10n.lastSyncTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                settingsAsync.when(
-                  data: (settings) {
-                    final lastSync = settings.lastSync;
-                    final text = lastSync == null
-                        ? context.l10n.lastSyncNever
-                        : Formatters.dateTime(lastSync);
-                    return Text(text);
-                  },
-                  loading: () => const Text('...'),
-                  error: (_, __) => Text(context.l10n.lastSyncNever),
-                ),
-                const SizedBox(height: 12),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final primary = ElevatedButton.icon(
-                      onPressed: () => _showReplacePicker(context),
-                      icon: const Icon(Icons.build),
-                      label: Text(
-                        context.l10n.addReplacement,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: 0.08,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Transform.translate(
+                          offset: const Offset(0, -6),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Image.asset(
+                              'assets/app_icon.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
                       ),
-                    );
-                    final secondary = OutlinedButton.icon(
-                      onPressed: () => _handleSync(context, ref),
-                      icon: const Icon(Icons.sync),
-                      label: Text(
-                        context.l10n.syncStrava,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    settingsAsync.when(
+                      data: (settings) {
+                        final lastSync = settings.lastSync;
+                        final lastSyncText = lastSync == null
+                            ? context.l10n.lastSyncNever
+                            : Formatters.dateTime(lastSync);
+                        final isPro = settings.isPro;
+                        final statusText = isPro
+                            ? (settings.stravaConnected
+                                ? context.l10n.connectedStatus
+                                : context.l10n.disconnectedStatus)
+                            : context.l10n.proOnlyStatus;
+                        final showStatus = !isPro || !settings.stravaConnected;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final lastSyncBlock = Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      context.l10n.lastSyncTitle,
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(lastSyncText),
+                                  ],
+                                );
+                                final stravaBlock = Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (showStatus) Text(statusText),
+                                  ],
+                                );
+                                if (constraints.maxWidth < 360) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      lastSyncBlock,
+                                      const SizedBox(height: 12),
+                                      stravaBlock,
+                                    ],
+                                  );
+                                }
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(child: lastSyncBlock),
+                                    const SizedBox(width: 16),
+                                    Expanded(child: stravaBlock),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            const Divider(height: 1),
+                            const SizedBox(height: 12),
+                            if (!isPro)
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () => context.push('/paywall'),
+                                  child: Text(context.l10n.connectStrava),
+                                ),
+                              )
+                            else if (!settings.stravaConnected)
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed:
+                                      _isSyncing ? null : () => _connectStrava(context),
+                                  child: Text(context.l10n.connectStrava),
+                                ),
+                              )
+                            else
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed:
+                                        _isSyncing ? null : () => _handleSync(context),
+                                    icon: _isSyncing
+                                        ? const SizedBox(
+                                            height: 16,
+                                            width: 16,
+                                            child:
+                                                CircularProgressIndicator(strokeWidth: 2),
+                                          )
+                                        : const Icon(Icons.sync),
+                                    label: Text(
+                                      _isSyncing
+                                          ? context.l10n.syncingStrava
+                                          : context.l10n.syncStrava,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  OutlinedButton(
+                                    onPressed: _isSyncing ? null : _disconnectStrava,
+                                    child: Text(context.l10n.disconnectStrava),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        );
+                      },
+                      loading: () => const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: LinearProgressIndicator(),
                       ),
-                    );
-                    if (constraints.maxWidth < 360) {
-                      return Column(
+                      error: (_, __) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(width: double.infinity, child: primary),
+                          Text(
+                            context.l10n.lastSyncTitle,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(context.l10n.lastSyncNever),
                           const SizedBox(height: 12),
-                          SizedBox(width: double.infinity, child: secondary),
+                          Text(context.l10n.disconnectedStatus),
                         ],
-                      );
-                    }
-                    return Row(
-                      children: [
-                        Expanded(child: primary),
-                        const SizedBox(width: 12),
-                        Expanded(child: secondary),
-                      ],
-                    );
-                  },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -123,7 +233,17 @@ class HomeScreen extends ConsumerWidget {
                       Text(context.l10n.emptyGarageSubtitle),
                       const SizedBox(height: 12),
                       ElevatedButton(
-                        onPressed: () => context.push('/garage/add'),
+                        onPressed: settings == null
+                            ? null
+                            : () {
+                                if (settings.isPro || !settings.hadPro) {
+                                  context.push('/garage/add');
+                                  return;
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(context.l10n.proRequiredMessage)),
+                                );
+                              },
                         child: Text(context.l10n.addBike),
                       ),
                     ],
@@ -132,8 +252,10 @@ class HomeScreen extends ConsumerWidget {
               }
 
               var ordered = bikes;
+              final effectivePrimaryId =
+                  primaryBikeId ?? (bikes.isNotEmpty ? bikes.first.bike.id : null);
               final index = bikes.indexWhere(
-                (bike) => bike.bike.id == primaryBikeId,
+                (bike) => bike.bike.id == effectivePrimaryId,
               );
               if (index > 0) {
                 final mutable = [...bikes];
@@ -146,7 +268,12 @@ class HomeScreen extends ConsumerWidget {
                 children: ordered
                     .map((bike) => Padding(
                           padding: const EdgeInsets.only(bottom: 12),
-                          child: _BikeCard(bike: bike),
+                          child: _BikeCard(
+                            bike: bike,
+                            isLocked: isLimited &&
+                                effectivePrimaryId != null &&
+                                bike.bike.id != effectivePrimaryId,
+                          ),
                         ))
                     .toList(),
               );
@@ -160,6 +287,15 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Future<void> _showReplacePicker(BuildContext context) async {
+    final settings = ref.read(settingsControllerProvider).value;
+    if (settings != null && !settings.isPro && settings.hadPro) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.proRequiredMessage)),
+        );
+      }
+      return;
+    }
     await showModalBottomSheet<void>(
       context: context,
       useSafeArea: true,
@@ -170,7 +306,96 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _handleSync(BuildContext context, WidgetRef ref) async {
+  Future<void> _showAlertsSheet(BuildContext context) async {
+    final settings = ref.read(settingsControllerProvider).value;
+    if (settings?.isPro != true) {
+      if (context.mounted) {
+        context.push('/paywall');
+      }
+      return;
+    }
+    await showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: FutureBuilder<List<_AlertItem>>(
+            future: _loadAlerts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Text(context.l10n.noComponentsYet);
+              }
+              final alerts = snapshot.data ?? [];
+              if (alerts.isEmpty) {
+                return Center(child: Text(context.l10n.alertsEmpty));
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.alertsTitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: alerts.length,
+                      separatorBuilder: (_, __) => const Divider(),
+                      itemBuilder: (context, index) {
+                        final alert = alerts[index];
+                        final component = alert.snapshot.component;
+                        final wearPercent = (alert.wear * 100).round();
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text('${component.brand} ${component.model}'),
+                          subtitle: Text(
+                            '${alert.snapshot.bikeName} • $wearPercent%',
+                          ),
+                          trailing: StatusChip(
+                            label: _wearStatusLabel(context, alert.wear),
+                            level: WearStatus.statusFromWear(alert.wear),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            context.push('/components/${component.id}');
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+
+  Future<List<_AlertItem>> _loadAlerts() async {
+    final snapshots = await ref.read(componentRepositoryProvider).fetchActiveWearSnapshots();
+    final alerts = <_AlertItem>[];
+    for (final snapshot in snapshots) {
+      final expected = snapshot.component.expectedLifeKm;
+      if (expected <= 0) continue;
+      final wear = ((snapshot.bikeKm - snapshot.component.installedAtBikeKm) / expected)
+          .clamp(0.0, 1.0)
+          .toDouble();
+      if (wear >= 0.7) {
+        alerts.add(_AlertItem(snapshot: snapshot, wear: wear));
+      }
+    }
+    alerts.sort((a, b) => b.wear.compareTo(a.wear));
+    return alerts;
+  }
+
+  Future<void> _handleSync(BuildContext context) async {
     final settingsAsync = ref.read(settingsControllerProvider);
     if (settingsAsync.value?.isPro != true) {
       if (context.mounted) {
@@ -187,18 +412,85 @@ class HomeScreen extends ConsumerWidget {
       return;
     }
 
+    final service = ref.read(stravaServiceProvider);
+    BikeImportResult? importResult;
+    if (mounted) {
+      setState(() => _isSyncing = true);
+    }
+    try {
+      importResult = await service.importBikes();
+    } on StravaAuthException catch (error) {
+      await ref.read(settingsControllerProvider.notifier).disconnectStrava();
+      if (context.mounted) {
+        final message = error.error == StravaAuthError.expired
+            ? context.l10n.stravaSessionExpired
+            : context.l10n.stravaConnectRequired;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+      return;
+    } on Exception {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.stravaImportFailed)),
+        );
+      }
+      return;
+    } finally {
+      if (mounted) {
+        setState(() => _isSyncing = false);
+      }
+    }
+
     final bikes = await ref.read(bikesStreamProvider.future);
-    if (bikes.isEmpty) return;
+    if (bikes.isEmpty) {
+      if (context.mounted &&
+          importResult != null &&
+          (importResult.added > 0 || importResult.linked > 0)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.l10n.stravaImportResult(
+                importResult.added,
+                importResult.linked,
+                importResult.skipped,
+              ),
+            ),
+          ),
+        );
+      }
+      return;
+    }
 
     final selectedBikeId = await _selectBike(context, bikes);
     if (selectedBikeId == null) return;
 
     try {
-      final service = ref.read(stravaServiceProvider);
+      if (mounted) {
+        setState(() => _isSyncing = true);
+      }
       final result = await service.syncBike(selectedBikeId);
       await ref.read(settingsControllerProvider.notifier).setLastSync(DateTime.now());
+      await ref
+          .read(maintenanceAlertServiceProvider)
+          .checkAlerts(context, bikeId: selectedBikeId);
 
       if (context.mounted) {
+        if (importResult != null &&
+            (importResult.added > 0 || importResult.linked > 0)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                context.l10n.stravaImportResult(
+                  importResult.added,
+                  importResult.linked,
+                  importResult.skipped,
+                ),
+              ),
+            ),
+          );
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.syncSuccess(result.added, result.summary()))),
         );
@@ -219,7 +511,27 @@ class HomeScreen extends ConsumerWidget {
           SnackBar(content: Text(context.l10n.stravaSyncFailed)),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() => _isSyncing = false);
+      }
     }
+  }
+
+  Future<void> _connectStrava(BuildContext context) async {
+    try {
+      await ref.read(stravaAuthServiceProvider).startAuth();
+    } on Exception {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.stravaAuthFailed)),
+        );
+      }
+    }
+  }
+
+  Future<void> _disconnectStrava() async {
+    await ref.read(settingsControllerProvider.notifier).disconnectStrava();
   }
 
   Future<int?> _selectBike(BuildContext context, List<BikeWithStats> bikes) async {
@@ -244,60 +556,72 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _BikeCard extends ConsumerWidget {
-  const _BikeCard({required this.bike});
+  const _BikeCard({required this.bike, required this.isLocked});
 
   final BikeWithStats bike;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final componentsAsync = ref.watch(componentsByBikeProvider(bike.bike.id));
 
-    return VCard(
-      onTap: () => context.push('/garage/${bike.bike.id}'),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              bike.bike.name,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              context.l10n.totalKmLabel(Formatters.km(bike.totalKm)),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 12),
-            componentsAsync.when(
-              data: (components) {
-                if (components.isEmpty) {
-                  return Text(context.l10n.noComponentsYet);
-                }
-                final top = _topWear(components, bike.totalKm);
-                final wearPercent = (top.wear * 100).round();
-                return Row(
-                  children: [
-                    Flexible(
-                      child: StatusChip(
-                        label: _statusLabel(context, top.wear),
-                        level: WearStatus.statusFromWear(top.wear),
-                      ),
+    return Opacity(
+      opacity: isLocked ? 0.5 : 1,
+      child: VCard(
+        onTap: isLocked ? null : () => context.push('/garage/${bike.bike.id}'),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      bike.bike.name,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        context.l10n.topAlertLabel(top.component.brand, top.component.model, wearPercent),
-                        style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  if (isLocked) const Icon(Icons.lock, size: 18),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                context.l10n.totalKmLabel(Formatters.km(bike.totalKm)),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 12),
+              componentsAsync.when(
+                data: (components) {
+                  if (components.isEmpty) {
+                    return Text(context.l10n.noComponentsYet);
+                  }
+                  final top = _topWear(components, bike.totalKm);
+                  final wearPercent = (top.wear * 100).round();
+                  return Row(
+                    children: [
+                      Flexible(
+                        child: StatusChip(
+                          label: _statusLabel(context, top.wear),
+                          level: WearStatus.statusFromWear(top.wear),
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-              loading: () => const LinearProgressIndicator(),
-              error: (_, __) => Text(context.l10n.noComponentsYet),
-            ),
-          ],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          context.l10n
+                              .topAlertLabel(top.component.brand, top.component.model, wearPercent),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                loading: () => const LinearProgressIndicator(),
+                error: (_, __) => Text(context.l10n.noComponentsYet),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -320,10 +644,7 @@ class _BikeCard extends ConsumerWidget {
   }
 
   String _statusLabel(BuildContext context, double wear) {
-    if (wear >= 1.0) return context.l10n.statusReplaceNow;
-    if (wear >= 0.85) return context.l10n.statusReplace;
-    if (wear >= 0.7) return context.l10n.statusWatch;
-    return context.l10n.statusOk;
+    return _wearStatusLabel(context, wear);
   }
 }
 
@@ -333,6 +654,21 @@ class _WearInfo {
   final ComponentItem component;
   final double wear;
 }
+
+class _AlertItem {
+  _AlertItem({required this.snapshot, required this.wear});
+
+  final ComponentWearSnapshot snapshot;
+  final double wear;
+}
+
+String _wearStatusLabel(BuildContext context, double wear) {
+  if (wear >= 1.0) return context.l10n.statusReplaceNow;
+  if (wear >= 0.85) return context.l10n.statusReplace;
+  if (wear >= 0.7) return context.l10n.statusWatch;
+  return context.l10n.statusOk;
+}
+
 
 class _ReplacePickerSheet extends ConsumerStatefulWidget {
   @override
@@ -345,6 +681,7 @@ class _ReplacePickerSheetState extends ConsumerState<_ReplacePickerSheet> {
   @override
   Widget build(BuildContext context) {
     final bikesAsync = ref.watch(bikesStreamProvider);
+    final settings = ref.watch(settingsControllerProvider).value;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -359,9 +696,15 @@ class _ReplacePickerSheetState extends ConsumerState<_ReplacePickerSheet> {
                     return Text(context.l10n.emptyGarageTitle);
                   }
 
-                  final selectedBike = bikes.firstWhere(
+                  final isLimited = settings != null && !settings.isPro;
+                  final primaryBikeId =
+                      settings?.primaryBikeId ?? bikes.first.bike.id;
+                  final availableBikes = isLimited
+                      ? bikes.where((bike) => bike.bike.id == primaryBikeId).toList()
+                      : bikes;
+                  final selectedBike = availableBikes.firstWhere(
                     (bike) => bike.bike.id == _selectedBikeId,
-                    orElse: () => bikes.first,
+                    orElse: () => availableBikes.first,
                   );
                   _selectedBikeId ??= selectedBike.bike.id;
 
@@ -378,7 +721,7 @@ class _ReplacePickerSheetState extends ConsumerState<_ReplacePickerSheet> {
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
-                        children: bikes
+                        children: availableBikes
                             .map(
                               (bike) => ChoiceChip(
                                 label: Text(bike.bike.name),

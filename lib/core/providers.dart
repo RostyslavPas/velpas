@@ -14,6 +14,8 @@ import '../data/repositories/component_repository.dart';
 import '../data/repositories/ride_repository.dart';
 import '../data/repositories/wardrobe_repository.dart';
 import 'services/biometric_service.dart';
+import 'services/maintenance_alert_service.dart';
+import 'services/notification_service.dart';
 import 'services/secure_storage_service.dart';
 import 'services/seed_service.dart';
 import 'services/strava_service.dart';
@@ -120,6 +122,18 @@ final stravaAuthServiceProvider = Provider<StravaAuthService>((ref) {
   return StravaAuthService(ref.watch(secureStorageServiceProvider));
 });
 
+final notificationServiceProvider = Provider<NotificationService>((ref) {
+  return NotificationService();
+});
+
+final maintenanceAlertServiceProvider = Provider<MaintenanceAlertService>((ref) {
+  return MaintenanceAlertService(
+    componentRepository: ref.watch(componentRepositoryProvider),
+    metaDao: ref.watch(metaDaoProvider),
+    notificationService: ref.watch(notificationServiceProvider),
+  );
+});
+
 final seedServiceProvider = Provider<SeedService>((ref) {
   return SeedService(
     metaDao: ref.watch(metaDaoProvider),
@@ -132,4 +146,5 @@ final appInitProvider = FutureProvider<void>((ref) async {
   final db = ref.watch(databaseProvider);
   await db.init();
   await ref.watch(seedServiceProvider).seedIfNeeded();
+  await ref.watch(notificationServiceProvider).init();
 });

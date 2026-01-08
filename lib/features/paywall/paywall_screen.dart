@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,13 +64,14 @@ class PaywallScreen extends ConsumerWidget {
             child: Text(context.l10n.startPro),
           ),
           const SizedBox(height: 8),
-          OutlinedButton(
-            onPressed: () async {
-              await ref.read(settingsControllerProvider.notifier).setPro(true);
-              if (context.mounted) context.pop();
-            },
-            child: Text(context.l10n.restorePurchases),
-          ),
+          if (!kIsWeb && Platform.isIOS)
+            OutlinedButton(
+              onPressed: () async {
+                await ref.read(settingsControllerProvider.notifier).setPro(true);
+                if (context.mounted) context.pop();
+              },
+              child: Text(context.l10n.restorePurchases),
+            ),
         ],
       ),
     );

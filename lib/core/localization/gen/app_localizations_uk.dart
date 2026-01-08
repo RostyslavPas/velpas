@@ -55,6 +55,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get syncStrava => 'Синхронізувати Strava';
 
   @override
+  String get syncingStrava => 'Синхронізація...';
+
+  @override
+  String get connectedStatus => 'Підключено';
+
+  @override
+  String get disconnectedStatus => 'Не підключено';
+
+  @override
+  String get proOnlyStatus => 'Лише Pro';
+
+  @override
   String get yourBikes => 'Ваші велосипеди';
 
   @override
@@ -76,6 +88,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get noComponentsYet => 'Компонентів ще немає';
 
   @override
+  String get alertsTitle => 'Сповіщення про знос';
+
+  @override
+  String get alertsEmpty => 'Наразі немає компонентів, що потребують уваги.';
+
+  @override
   String topAlertLabel(Object brand, Object model, Object wearPercent) {
     return 'Топ-алерт: $brand $model • $wearPercent%';
   }
@@ -91,6 +109,27 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get statusReplaceNow => 'Потрібна заміна';
+
+  @override
+  String get alertTitleWatch => 'Потрібна увага';
+
+  @override
+  String get alertTitleReplace => 'Потрібна заміна';
+
+  @override
+  String alertBodyWatch(Object component, Object bike, Object wear) {
+    return '$component на $bike має знос $wear%.';
+  }
+
+  @override
+  String alertBodyReplace(Object component, Object bike, Object wear) {
+    return '$component на $bike має знос $wear%. Пора замінити.';
+  }
+
+  @override
+  String alertBodyReplaceNow(Object component, Object bike, Object wear) {
+    return '$component на $bike має знос $wear%. Замініть зараз.';
+  }
 
   @override
   String get selectBike => 'Оберіть велосипед';
@@ -174,7 +213,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get componentTypeBrakes => 'Гальма';
 
   @override
-  String get componentTypeCockpit => 'Кокпіт';
+  String get componentTypeCockpit => 'Руль';
+
+  @override
+  String get componentTypeStem => 'Виніс';
+
+  @override
+  String get componentTypeBarTape => 'Обмотка руля';
 
   @override
   String get componentTypeOther => 'Інше';
@@ -184,6 +229,12 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get modelLabel => 'Модель';
+
+  @override
+  String get componentNameLabel => 'Назва компонента';
+
+  @override
+  String get componentDetailsOptionalLabel => 'Деталі (необов\'язково)';
 
   @override
   String get expectedLifeLabel => 'Очікуваний ресурс (км)';
@@ -386,6 +437,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get cancelPro => 'Скасувати Pro';
 
   @override
+  String get proRequiredMessage => 'Доступно лише з PROS.TO Pro.';
+
+  @override
   String get stravaTitle => 'Strava';
 
   @override
@@ -465,7 +519,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get proBenefitUnlimited => 'Необмежені велосипеди й компоненти';
 
   @override
-  String get proBenefitAlerts => 'Розумні сповіщення (скоро)';
+  String get proBenefitAlerts => 'Розумні сповіщення';
 
   @override
   String get proPrice => '\$5 / місяць';
