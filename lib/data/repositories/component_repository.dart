@@ -75,6 +75,16 @@ class ComponentRepository {
     );
   }
 
+  Future<void> updateInstalledAtBikeKm({
+    required int id,
+    required int installedAtBikeKm,
+  }) {
+    return _componentDao.updateInstalledAtBikeKm(
+      id: id,
+      installedAtBikeKm: installedAtBikeKm,
+    );
+  }
+
   Future<int> replaceComponent({
     required ComponentItem oldComponent,
     required int removedAtBikeKm,

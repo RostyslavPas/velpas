@@ -27,6 +27,24 @@ class RideDao {
     return row.read<int>('total');
   }
 
+  Future<int> sumDistanceByBike(int bikeId) async {
+    final row = await _db.customSelect(
+      'SELECT COALESCE(SUM(distance_km), 0) AS total_km FROM ride_imports WHERE bike_id = ?',
+      variables: [Variable<int>(bikeId)],
+      readsFrom: {_db.rideImportsTable},
+    ).getSingle();
+    return row.read<int>('total_km');
+  }
+
+  Future<void> deleteBySource(String source) async {
+    await _db.customUpdate(
+      'DELETE FROM ride_imports WHERE source = ?',
+      variables: [Variable<String>(source)],
+      updates: {_db.rideImportsTable},
+      updateKind: UpdateKind.delete,
+    );
+  }
+
   Future<RideInsertResult> insertActivities(List<RideImportInput> activities) async {
     var added = 0;
     var totalDistanceKm = 0;

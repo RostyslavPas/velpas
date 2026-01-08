@@ -58,6 +58,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncingStrava => 'Syncing...';
 
   @override
+  String get fullSyncStrava => 'Full sync';
+
+  @override
+  String get fullSyncConfirmTitle => 'Full sync Strava';
+
+  @override
+  String get fullSyncConfirmBody =>
+      'This will import all Strava bikes and synchronize their total mileage.';
+
+  @override
+  String get fullSyncConfirmAction => 'Sync all';
+
+  @override
+  String get fullSyncCancelAction => 'Cancel';
+
+  @override
   String get connectedStatus => 'Connected';
 
   @override
@@ -65,6 +81,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proOnlyStatus => 'Pro-only';
+
+  @override
+  String get adjustBikeKm => 'Adjust mileage';
+
+  @override
+  String currentTotalKmLabel(Object km) {
+    return 'Current total: $km km';
+  }
+
+  @override
+  String get addKmLabel => 'Add km';
+
+  @override
+  String get setTotalKmLabel => 'Set total km';
+
+  @override
+  String get adjustComponentKm => 'Adjust component mileage';
+
+  @override
+  String get componentKmLabel => 'Component km since install';
 
   @override
   String get yourBikes => 'Your bikes';

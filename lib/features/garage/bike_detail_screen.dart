@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import '../../core/providers.dart';
 import '../../core/utils/component_utils.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/models/component_models.dart';
+import '../../data/models/bike_models.dart';
 import 'garage_providers.dart';
 import '../settings/settings_controller.dart';
 
@@ -64,6 +66,12 @@ class BikeDetailScreen extends ConsumerWidget {
                 currencyCode: currencyCode,
               ),
               const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () => _showAdjustBikeKmSheet(context, bike),
+                icon: const Icon(Icons.edit),
+                label: Text(context.l10n.adjustBikeKm),
+              ),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
@@ -190,6 +198,16 @@ class BikeDetailScreen extends ConsumerWidget {
       },
     );
   }
+
+  void _showAdjustBikeKmSheet(BuildContext context, BikeWithStats bike) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => _AdjustBikeKmSheet(bike: bike),
+    );
+  }
 }
 
 class _BikeHeader extends StatelessWidget {
@@ -305,8 +323,9 @@ class _ComponentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wear = ((bikeTotalKm - component.installedAtBikeKm) /
-            component.expectedLifeKm)
+    final kmSinceInstall =
+        max(0, bikeTotalKm - component.installedAtBikeKm).toInt();
+    final wear = (kmSinceInstall / component.expectedLifeKm)
         .clamp(0.0, 1.0)
         .toDouble();
     final wearLabel = (wear * 100).round();
@@ -352,7 +371,7 @@ class _ComponentTile extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 context.l10n.kmSinceInstall(
-                  Formatters.km(bikeTotalKm - component.installedAtBikeKm),
+                  Formatters.km(kmSinceInstall),
                   Formatters.km(component.expectedLifeKm),
                 ),
                 style: Theme.of(context).textTheme.bodySmall,
@@ -395,6 +414,7 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
   final _modelController = TextEditingController();
   final _lifeController = TextEditingController();
   final _priceController = TextEditingController();
+  final _initialKmController = TextEditingController(text: '0');
 
   @override
   void initState() {
@@ -408,6 +428,7 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
     _modelController.dispose();
     _lifeController.dispose();
     _priceController.dispose();
+    _initialKmController.dispose();
     super.dispose();
   }
 
@@ -468,6 +489,13 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
           ),
           const SizedBox(height: 12),
           TextField(
+            controller: _initialKmController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(labelText: context.l10n.componentKmLabel),
+          ),
+          const SizedBox(height: 12),
+          TextField(
             controller: _priceController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: context.l10n.priceOptionalLabel),
@@ -489,6 +517,9 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
               if (brand.isEmpty || (!isOther && model.isEmpty)) return;
               final expected = _parseInt(_lifeController.text) ??
                   ComponentDefaults.expectedLifeKm(_type);
+              final initialKm = _parseInt(_initialKmController.text) ?? 0;
+              final safeInitialKm = initialKm < 0 ? 0 : initialKm;
+              final installedAt = widget.bikeTotalKm - safeInitialKm;
               final price = double.tryParse(_priceController.text.trim());
               await ref.read(componentRepositoryProvider).addComponent(
                     bikeId: widget.bikeId,
@@ -496,8 +527,88 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
                     brand: brand,
                     model: model,
                     expectedLifeKm: expected,
-                    installedAtBikeKm: widget.bikeTotalKm,
+                    installedAtBikeKm: installedAt,
                     price: price,
+                  );
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: Text(context.l10n.saveLabel),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AdjustBikeKmSheet extends ConsumerStatefulWidget {
+  const _AdjustBikeKmSheet({required this.bike});
+
+  final BikeWithStats bike;
+
+  @override
+  ConsumerState<_AdjustBikeKmSheet> createState() => _AdjustBikeKmSheetState();
+}
+
+class _AdjustBikeKmSheetState extends ConsumerState<_AdjustBikeKmSheet> {
+  final _addKmController = TextEditingController();
+  final _setTotalController = TextEditingController();
+
+  @override
+  void dispose() {
+    _addKmController.dispose();
+    _setTotalController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewInsets = MediaQuery.of(context).viewInsets;
+    final currentTotal = widget.bike.totalKm;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + viewInsets.bottom),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Text(
+            context.l10n.adjustBikeKm,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(context.l10n.currentTotalKmLabel(Formatters.km(currentTotal))),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _addKmController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(labelText: context.l10n.addKmLabel),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _setTotalController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(labelText: context.l10n.setTotalKmLabel),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () async {
+              final addKm = _parseInt(_addKmController.text);
+              final setTotal = _parseInt(_setTotalController.text);
+              if (addKm == null && setTotal == null) return;
+
+              var newManual = widget.bike.bike.manualKm;
+              if (setTotal != null) {
+                final target = setTotal - widget.bike.ridesKm;
+                newManual = target < 0 ? 0 : target;
+              } else if (addKm != null) {
+                newManual = widget.bike.bike.manualKm + addKm;
+              }
+
+              await ref.read(bikeRepositoryProvider).updateManualKm(
+                    widget.bike.bike.id,
+                    newManual,
                   );
               if (context.mounted) {
                 Navigator.of(context).pop();

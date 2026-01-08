@@ -104,7 +104,7 @@ class StravaApiClient {
         ? rawName
         : 'Strava bike $gearId';
     final distance = data['distance'];
-    final distanceKm = distance is num ? (distance / 1000).round() : 0;
+    final distanceKm = distance is num ? (distance / 1000).floor() : 0;
     return StravaBike(
       gearId: gearId,
       name: name,
