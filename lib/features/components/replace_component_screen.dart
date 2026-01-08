@@ -47,6 +47,8 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
           if (component == null) {
             return Center(child: Text(context.l10n.componentNotFound));
           }
+          final componentType = ComponentType.fromId(component.type);
+          final isOther = componentType == ComponentType.other;
           final bikeAsync = ref.watch(bikeByIdProvider(component.bikeId));
 
           return bikeAsync.when(
@@ -92,7 +94,11 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: _brandController,
-                      decoration: InputDecoration(labelText: context.l10n.brandLabel),
+                      decoration: InputDecoration(
+                        labelText: isOther
+                            ? context.l10n.componentNameLabel
+                            : context.l10n.brandLabel,
+                      ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return context.l10n.requiredField;
@@ -103,9 +109,13 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _modelController,
-                      decoration: InputDecoration(labelText: context.l10n.modelLabel),
+                      decoration: InputDecoration(
+                        labelText: isOther
+                            ? context.l10n.componentDetailsOptionalLabel
+                            : context.l10n.modelLabel,
+                      ),
                       validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
+                        if (!isOther && (value == null || value.trim().isEmpty)) {
                           return context.l10n.requiredField;
                         }
                         return null;
@@ -130,11 +140,12 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                         final removedKm = int.parse(_removedKmController.text);
                         final expected = int.tryParse(_lifeController.text) ??
                             ComponentDefaults.expectedLifeKm(
-                              ComponentType.fromId(component.type),
+                              componentType,
                             );
                         final price = double.tryParse(_priceController.text.trim());
 
-                        await ref.read(componentRepositoryProvider).replaceComponent(
+                        final newComponentId =
+                            await ref.read(componentRepositoryProvider).replaceComponent(
                               oldComponent: component,
                               removedAtBikeKm: removedKm,
                               removedAt: DateTime.now(),
@@ -144,7 +155,10 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                               newPrice: price,
                             );
                         if (mounted) {
-                          context.pop();
+                          final router = GoRouter.of(context);
+                          router.pop();
+                          router.pop();
+                          router.push('/components/$newComponentId');
                         }
                       },
                       child: Text(context.l10n.replaceComponent),

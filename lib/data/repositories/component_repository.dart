@@ -31,6 +31,10 @@ class ComponentRepository {
     return _componentDao.watchTotalValueForBike(bikeId);
   }
 
+  Future<List<ComponentWearSnapshot>> fetchActiveWearSnapshots({int? bikeId}) {
+    return _componentDao.fetchActiveWearSnapshots(bikeId: bikeId);
+  }
+
   Future<int> addComponent({
     required int bikeId,
     required String type,
@@ -71,7 +75,7 @@ class ComponentRepository {
     );
   }
 
-  Future<void> replaceComponent({
+  Future<int> replaceComponent({
     required ComponentItem oldComponent,
     required int removedAtBikeKm,
     required DateTime removedAt,

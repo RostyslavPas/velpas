@@ -55,6 +55,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncStrava => 'Sync Strava';
 
   @override
+  String get syncingStrava => 'Syncing...';
+
+  @override
+  String get connectedStatus => 'Connected';
+
+  @override
+  String get disconnectedStatus => 'Not connected';
+
+  @override
+  String get proOnlyStatus => 'Pro-only';
+
+  @override
   String get yourBikes => 'Your bikes';
 
   @override
@@ -76,6 +88,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noComponentsYet => 'No components yet';
 
   @override
+  String get alertsTitle => 'Maintenance alerts';
+
+  @override
+  String get alertsEmpty => 'No components need attention yet.';
+
+  @override
   String topAlertLabel(Object brand, Object model, Object wearPercent) {
     return 'Top alert: $brand $model • $wearPercent%';
   }
@@ -91,6 +109,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusReplaceNow => 'Replace now';
+
+  @override
+  String get alertTitleWatch => 'Maintenance watch';
+
+  @override
+  String get alertTitleReplace => 'Replacement needed';
+
+  @override
+  String alertBodyWatch(Object component, Object bike, Object wear) {
+    return '$component on $bike is at $wear% wear.';
+  }
+
+  @override
+  String alertBodyReplace(Object component, Object bike, Object wear) {
+    return '$component on $bike is at $wear% wear. Replace soon.';
+  }
+
+  @override
+  String alertBodyReplaceNow(Object component, Object bike, Object wear) {
+    return '$component on $bike is at $wear% wear. Replace now.';
+  }
 
   @override
   String get selectBike => 'Select bike';
@@ -174,7 +213,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get componentTypeBrakes => 'Brakes';
 
   @override
-  String get componentTypeCockpit => 'Cockpit';
+  String get componentTypeCockpit => 'Handlebar';
+
+  @override
+  String get componentTypeStem => 'Stem';
+
+  @override
+  String get componentTypeBarTape => 'Handlebar tape';
 
   @override
   String get componentTypeOther => 'Other';
@@ -184,6 +229,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modelLabel => 'Model';
+
+  @override
+  String get componentNameLabel => 'Component name';
+
+  @override
+  String get componentDetailsOptionalLabel => 'Details (optional)';
 
   @override
   String get expectedLifeLabel => 'Expected life (km)';
@@ -386,6 +437,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelPro => 'Cancel Pro';
 
   @override
+  String get proRequiredMessage => 'Available with PROS.TO Pro.';
+
+  @override
   String get stravaTitle => 'Strava';
 
   @override
@@ -463,7 +517,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proBenefitUnlimited => 'Unlimited bikes & components';
 
   @override
-  String get proBenefitAlerts => 'Smart alerts (coming soon)';
+  String get proBenefitAlerts => 'Smart maintenance alerts';
 
   @override
   String get proPrice => '\$5 / month';

@@ -56,6 +56,7 @@ class ProsToTheme {
         backgroundColor: ProsToColors.bg0,
         foregroundColor: ProsToColors.silverPrimary,
         elevation: 0,
+        centerTitle: true,
       ),
       dividerTheme: const DividerThemeData(
         color: ProsToColors.divider,

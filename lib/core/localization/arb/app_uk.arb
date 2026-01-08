@@ -17,6 +17,10 @@
   "lastSyncNever": "Ще не синхронізовано",
   "addReplacement": "Додати заміну",
   "syncStrava": "Синхронізувати Strava",
+  "syncingStrava": "Синхронізація...",
+  "connectedStatus": "Підключено",
+  "disconnectedStatus": "Не підключено",
+  "proOnlyStatus": "Лише Pro",
   "yourBikes": "Ваші велосипеди",
   "emptyGarageTitle": "Ще немає велосипедів",
   "emptyGarageSubtitle": "Додайте перший байк, щоб почати трекінг компонентів.",
@@ -26,6 +30,8 @@
     "placeholders": {"km": {}}
   },
   "noComponentsYet": "Компонентів ще немає",
+  "alertsTitle": "Сповіщення про знос",
+  "alertsEmpty": "Наразі немає компонентів, що потребують уваги.",
   "topAlertLabel": "Топ-алерт: {brand} {model} • {wearPercent}%",
   "@topAlertLabel": {
     "placeholders": {"brand": {}, "model": {}, "wearPercent": {}}
@@ -34,6 +40,20 @@
   "statusWatch": "Увага",
   "statusReplace": "Скоро заміна",
   "statusReplaceNow": "Потрібна заміна",
+  "alertTitleWatch": "Потрібна увага",
+  "alertTitleReplace": "Потрібна заміна",
+  "alertBodyWatch": "{component} на {bike} має знос {wear}%.",
+  "@alertBodyWatch": {
+    "placeholders": {"component": {}, "bike": {}, "wear": {}}
+  },
+  "alertBodyReplace": "{component} на {bike} має знос {wear}%. Пора замінити.",
+  "@alertBodyReplace": {
+    "placeholders": {"component": {}, "bike": {}, "wear": {}}
+  },
+  "alertBodyReplaceNow": "{component} на {bike} має знос {wear}%. Замініть зараз.",
+  "@alertBodyReplaceNow": {
+    "placeholders": {"component": {}, "bike": {}, "wear": {}}
+  },
   "selectBike": "Оберіть велосипед",
   "selectComponent": "Оберіть компонент",
   "syncSuccess": "Імпортовано {added} поїздок • {summary}",
@@ -69,10 +89,14 @@
   "componentTypeWheels": "Колеса",
   "componentTypeTires": "Покришки",
   "componentTypeBrakes": "Гальма",
-  "componentTypeCockpit": "Кокпіт",
+  "componentTypeCockpit": "Руль",
+  "componentTypeStem": "Виніс",
+  "componentTypeBarTape": "Обмотка руля",
   "componentTypeOther": "Інше",
   "brandLabel": "Бренд",
   "modelLabel": "Модель",
+  "componentNameLabel": "Назва компонента",
+  "componentDetailsOptionalLabel": "Деталі (необов'язково)",
   "expectedLifeLabel": "Очікуваний ресурс (км)",
   "priceOptionalLabel": "Ціна (необов'язково)",
   "saveLabel": "Зберегти",
@@ -165,6 +189,7 @@
   "freeStatus": "Free",
   "upgradeToPro": "Оновити до Pro",
   "cancelPro": "Скасувати Pro",
+  "proRequiredMessage": "Доступно лише з PROS.TO Pro.",
   "stravaTitle": "Strava",
   "stravaConnected": "Strava підключено",
   "stravaDisconnected": "Strava не підключено",
@@ -200,7 +225,7 @@
   "proSubtitle": "Відкрийте преміум-функції та синхронізацію.",
   "proBenefitStrava": "Синхронізація Strava",
   "proBenefitUnlimited": "Необмежені велосипеди й компоненти",
-  "proBenefitAlerts": "Розумні сповіщення (скоро)",
+  "proBenefitAlerts": "Розумні сповіщення",
   "proPrice": "$5 / місяць",
   "proPriceNote": "Скасування будь-коли",
   "startPro": "Почати Pro",

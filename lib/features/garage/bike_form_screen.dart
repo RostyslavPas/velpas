@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/localization/app_localizations_ext.dart';
 import '../../core/providers.dart';
 import 'garage_providers.dart';
+import '../settings/settings_controller.dart';
 
 class BikeFormScreen extends ConsumerStatefulWidget {
   const BikeFormScreen({super.key, this.bikeId});
@@ -106,6 +107,26 @@ class _BikeFormScreenState extends ConsumerState<BikeFormScreen> {
     final price = double.tryParse(_priceController.text.trim());
 
     if (widget.bikeId == null) {
+      final settings = ref.read(settingsControllerProvider).value;
+      if (settings != null && !settings.isPro) {
+        if (settings.hadPro) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.l10n.proRequiredMessage)),
+            );
+          }
+          return;
+        }
+        final bikes = await ref.read(garageBikesProvider.future);
+        if (bikes.length >= 1) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.l10n.proRequiredMessage)),
+            );
+          }
+          return;
+        }
+      }
       await ref.read(bikeRepositoryProvider).addBike(
             name: name,
             purchasePrice: price,

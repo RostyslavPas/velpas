@@ -25,10 +25,17 @@ class BikeDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bikeAsync = ref.watch(bikeByIdProvider(bikeId));
     final componentsAsync = ref.watch(componentsForBikeProvider(bikeId));
+    final settingsAsync = ref.watch(settingsControllerProvider);
     final currencyCode = ref.watch(settingsControllerProvider).maybeWhen(
           data: (settings) => settings.currencyCode,
           orElse: () => 'USD',
         );
+    final settings = settingsAsync.value;
+    final componentCount =
+        componentsAsync.maybeWhen(data: (components) => components.length, orElse: () => -1);
+    final hasComponentCount = componentCount >= 0;
+    final isCancelled = settings != null && !settings.isPro && settings.hadPro;
+    final isFree = settings != null && !settings.isPro && !settings.hadPro;
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +72,19 @@ class BikeDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   TextButton.icon(
-                    onPressed: () => _showAddComponentSheet(context, bike.totalKm),
+                    onPressed: settings == null || !hasComponentCount
+                        ? null
+                        : () {
+                            if (isCancelled) {
+                              _showProRequired(context);
+                              return;
+                            }
+                            if (isFree && componentCount >= 5) {
+                              _showProRequired(context);
+                              return;
+                            }
+                            _showAddComponentSheet(context, bike.totalKm, componentCount);
+                          },
                     icon: const Icon(Icons.add),
                     label: Text(context.l10n.addComponent),
                   ),
@@ -151,13 +170,21 @@ class BikeDetailScreen extends ConsumerWidget {
     }
   }
 
-  void _showAddComponentSheet(BuildContext context, int bikeTotalKm) {
+  void _showAddComponentSheet(
+    BuildContext context,
+    int bikeTotalKm,
+    int currentCount,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       useSafeArea: true,
       showDragHandle: true,
       builder: (context) {
-        return _AddComponentSheet(bikeId: bikeId, bikeTotalKm: bikeTotalKm);
+        return _AddComponentSheet(
+          bikeId: bikeId,
+          bikeTotalKm: bikeTotalKm,
+          currentCount: currentCount,
+        );
       },
     );
   }
@@ -182,23 +209,63 @@ class _BikeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final file = (!kIsWeb && photoPath != null) ? File(photoPath!) : null;
     final hasPhoto = file != null && file.existsSync();
-    return VCard(
-      child: Row(
-        children: [
-          Container(
-            height: 88,
-            width: 88,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Colors.black26,
-              image: hasPhoto
-                  ? DecorationImage(image: FileImage(file), fit: BoxFit.cover)
-                  : null,
+    if (!hasPhoto) {
+      return VCard(
+        child: Row(
+          children: [
+            Container(
+              height: 88,
+              width: 88,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.black26,
+              ),
+              child: const Icon(Icons.directions_bike, size: 40),
             ),
-            child: hasPhoto ? null : const Icon(Icons.directions_bike, size: 40),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    bikeName,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(context.l10n.totalKmLabel(Formatters.km(totalKm))),
+                  if (price != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      context.l10n.purchasePriceLabel(
+                        Formatters.price(price!, currencyCode: currencyCode),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return VCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image.file(
+                file,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
+          Padding(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -309,10 +376,12 @@ class _AddComponentSheet extends ConsumerStatefulWidget {
   const _AddComponentSheet({
     required this.bikeId,
     required this.bikeTotalKm,
+    required this.currentCount,
   });
 
   final int bikeId;
   final int bikeTotalKm;
+  final int currentCount;
 
   @override
   ConsumerState<_AddComponentSheet> createState() => _AddComponentSheetState();
@@ -342,6 +411,8 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isOther = _type == ComponentType.other;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: ListView(
@@ -371,12 +442,19 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
           const SizedBox(height: 12),
           TextField(
             controller: _brandController,
-            decoration: InputDecoration(labelText: context.l10n.brandLabel),
+            decoration: InputDecoration(
+              labelText:
+                  isOther ? context.l10n.componentNameLabel : context.l10n.brandLabel,
+            ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _modelController,
-            decoration: InputDecoration(labelText: context.l10n.modelLabel),
+            decoration: InputDecoration(
+              labelText: isOther
+                  ? context.l10n.componentDetailsOptionalLabel
+                  : context.l10n.modelLabel,
+            ),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -393,9 +471,18 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () async {
+              final settings = ref.read(settingsControllerProvider).value;
+              final isCancelled = settings != null && !settings.isPro && settings.hadPro;
+              final isFree = settings != null && !settings.isPro && !settings.hadPro;
+              if (isCancelled || (isFree && widget.currentCount >= 5)) {
+                if (context.mounted) {
+                  _showProRequired(context);
+                }
+                return;
+              }
               final brand = _brandController.text.trim();
               final model = _modelController.text.trim();
-              if (brand.isEmpty || model.isEmpty) return;
+              if (brand.isEmpty || (!isOther && model.isEmpty)) return;
               final expected = int.tryParse(_lifeController.text) ??
                   ComponentDefaults.expectedLifeKm(_type);
               final price = double.tryParse(_priceController.text.trim());
@@ -418,4 +505,10 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
       ),
     );
   }
+}
+
+void _showProRequired(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(context.l10n.proRequiredMessage)),
+  );
 }

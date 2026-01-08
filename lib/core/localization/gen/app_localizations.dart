@@ -188,6 +188,30 @@ abstract class AppLocalizations {
   /// **'Sync Strava'**
   String get syncStrava;
 
+  /// No description provided for @syncingStrava.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing...'**
+  String get syncingStrava;
+
+  /// No description provided for @connectedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connectedStatus;
+
+  /// No description provided for @disconnectedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get disconnectedStatus;
+
+  /// No description provided for @proOnlyStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro-only'**
+  String get proOnlyStatus;
+
   /// No description provided for @yourBikes.
   ///
   /// In en, this message translates to:
@@ -224,6 +248,18 @@ abstract class AppLocalizations {
   /// **'No components yet'**
   String get noComponentsYet;
 
+  /// No description provided for @alertsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance alerts'**
+  String get alertsTitle;
+
+  /// No description provided for @alertsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No components need attention yet.'**
+  String get alertsEmpty;
+
   /// No description provided for @topAlertLabel.
   ///
   /// In en, this message translates to:
@@ -253,6 +289,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Replace now'**
   String get statusReplaceNow;
+
+  /// No description provided for @alertTitleWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance watch'**
+  String get alertTitleWatch;
+
+  /// No description provided for @alertTitleReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replacement needed'**
+  String get alertTitleReplace;
+
+  /// No description provided for @alertBodyWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'{component} on {bike} is at {wear}% wear.'**
+  String alertBodyWatch(Object component, Object bike, Object wear);
+
+  /// No description provided for @alertBodyReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'{component} on {bike} is at {wear}% wear. Replace soon.'**
+  String alertBodyReplace(Object component, Object bike, Object wear);
+
+  /// No description provided for @alertBodyReplaceNow.
+  ///
+  /// In en, this message translates to:
+  /// **'{component} on {bike} is at {wear}% wear. Replace now.'**
+  String alertBodyReplaceNow(Object component, Object bike, Object wear);
 
   /// No description provided for @selectBike.
   ///
@@ -407,8 +473,20 @@ abstract class AppLocalizations {
   /// No description provided for @componentTypeCockpit.
   ///
   /// In en, this message translates to:
-  /// **'Cockpit'**
+  /// **'Handlebar'**
   String get componentTypeCockpit;
+
+  /// No description provided for @componentTypeStem.
+  ///
+  /// In en, this message translates to:
+  /// **'Stem'**
+  String get componentTypeStem;
+
+  /// No description provided for @componentTypeBarTape.
+  ///
+  /// In en, this message translates to:
+  /// **'Handlebar tape'**
+  String get componentTypeBarTape;
 
   /// No description provided for @componentTypeOther.
   ///
@@ -427,6 +505,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Model'**
   String get modelLabel;
+
+  /// No description provided for @componentNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Component name'**
+  String get componentNameLabel;
+
+  /// No description provided for @componentDetailsOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Details (optional)'**
+  String get componentDetailsOptionalLabel;
 
   /// No description provided for @expectedLifeLabel.
   ///
@@ -794,6 +884,12 @@ abstract class AppLocalizations {
   /// **'Cancel Pro'**
   String get cancelPro;
 
+  /// No description provided for @proRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Available with PROS.TO Pro.'**
+  String get proRequiredMessage;
+
   /// No description provided for @stravaTitle.
   ///
   /// In en, this message translates to:
@@ -941,7 +1037,7 @@ abstract class AppLocalizations {
   /// No description provided for @proBenefitAlerts.
   ///
   /// In en, this message translates to:
-  /// **'Smart alerts (coming soon)'**
+  /// **'Smart maintenance alerts'**
   String get proBenefitAlerts;
 
   /// No description provided for @proPrice.

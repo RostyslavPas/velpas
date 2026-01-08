@@ -17,6 +17,10 @@
   "lastSyncNever": "Never synced",
   "addReplacement": "Add replacement",
   "syncStrava": "Sync Strava",
+  "syncingStrava": "Syncing...",
+  "connectedStatus": "Connected",
+  "disconnectedStatus": "Not connected",
+  "proOnlyStatus": "Pro-only",
   "yourBikes": "Your bikes",
   "emptyGarageTitle": "No bikes yet",
   "emptyGarageSubtitle": "Add your first bike to start tracking components.",
@@ -26,6 +30,8 @@
     "placeholders": {"km": {}}
   },
   "noComponentsYet": "No components yet",
+  "alertsTitle": "Maintenance alerts",
+  "alertsEmpty": "No components need attention yet.",
   "topAlertLabel": "Top alert: {brand} {model} • {wearPercent}%",
   "@topAlertLabel": {
     "placeholders": {"brand": {}, "model": {}, "wearPercent": {}}
@@ -34,6 +40,20 @@
   "statusWatch": "Watch",
   "statusReplace": "Replace soon",
   "statusReplaceNow": "Replace now",
+  "alertTitleWatch": "Maintenance watch",
+  "alertTitleReplace": "Replacement needed",
+  "alertBodyWatch": "{component} on {bike} is at {wear}% wear.",
+  "@alertBodyWatch": {
+    "placeholders": {"component": {}, "bike": {}, "wear": {}}
+  },
+  "alertBodyReplace": "{component} on {bike} is at {wear}% wear. Replace soon.",
+  "@alertBodyReplace": {
+    "placeholders": {"component": {}, "bike": {}, "wear": {}}
+  },
+  "alertBodyReplaceNow": "{component} on {bike} is at {wear}% wear. Replace now.",
+  "@alertBodyReplaceNow": {
+    "placeholders": {"component": {}, "bike": {}, "wear": {}}
+  },
   "selectBike": "Select bike",
   "selectComponent": "Select component",
   "syncSuccess": "Imported {added} rides • {summary}",
@@ -69,10 +89,14 @@
   "componentTypeWheels": "Wheels",
   "componentTypeTires": "Tires",
   "componentTypeBrakes": "Brakes",
-  "componentTypeCockpit": "Cockpit",
+  "componentTypeCockpit": "Handlebar",
+  "componentTypeStem": "Stem",
+  "componentTypeBarTape": "Handlebar tape",
   "componentTypeOther": "Other",
   "brandLabel": "Brand",
   "modelLabel": "Model",
+  "componentNameLabel": "Component name",
+  "componentDetailsOptionalLabel": "Details (optional)",
   "expectedLifeLabel": "Expected life (km)",
   "priceOptionalLabel": "Price (optional)",
   "saveLabel": "Save",
@@ -165,6 +189,7 @@
   "freeStatus": "Free",
   "upgradeToPro": "Upgrade to Pro",
   "cancelPro": "Cancel Pro",
+  "proRequiredMessage": "Available with PROS.TO Pro.",
   "stravaTitle": "Strava",
   "stravaConnected": "Strava connected",
   "stravaDisconnected": "Strava not connected",
@@ -201,7 +226,7 @@
   "proSubtitle": "Unlock premium maintenance and sync features.",
   "proBenefitStrava": "Strava sync",
   "proBenefitUnlimited": "Unlimited bikes & components",
-  "proBenefitAlerts": "Smart alerts (coming soon)",
+  "proBenefitAlerts": "Smart maintenance alerts",
   "proPrice": "$5 / month",
   "proPriceNote": "Cancel anytime",
   "startPro": "Start Pro",
