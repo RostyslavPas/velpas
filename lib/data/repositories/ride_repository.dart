@@ -14,6 +14,14 @@ class RideRepository {
     return _rideDao.countByBike(bikeId);
   }
 
+  Future<int> sumDistanceByBike(int bikeId) {
+    return _rideDao.sumDistanceByBike(bikeId);
+  }
+
+  Future<void> deleteBySource(String source) {
+    return _rideDao.deleteBySource(source);
+  }
+
   Future<RideInsertResult> insertActivities(List<RideImportInput> activities) {
     return _rideDao.insertActivities(activities);
   }

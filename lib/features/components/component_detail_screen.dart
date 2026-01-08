@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,8 +9,11 @@ import '../../app/widgets/status_chip.dart';
 import '../../app/widgets/v_card.dart';
 import '../../app/widgets/wear_ring.dart';
 import '../../core/localization/app_localizations_ext.dart';
+import '../../core/providers.dart';
 import '../../core/utils/component_utils.dart';
 import '../../core/utils/formatters.dart';
+import '../../data/models/component_models.dart';
+import '../../data/models/bike_models.dart';
 import '../garage/garage_providers.dart';
 import 'component_providers.dart';
 import '../settings/settings_controller.dart';
@@ -49,8 +55,9 @@ class ComponentDetailScreen extends ConsumerWidget {
           return bikeAsync.when(
             data: (bike) {
               if (bike == null) return Center(child: Text(context.l10n.bikeNotFound));
-              final wear = ((bike.totalKm - component.installedAtBikeKm) /
-                      component.expectedLifeKm)
+              final kmSinceInstall =
+                  max(0, bike.totalKm - component.installedAtBikeKm).toInt();
+              final wear = (kmSinceInstall / component.expectedLifeKm)
                   .clamp(0.0, 1.0)
                   .toDouble();
               final wearPercent = (wear * 100).round();
@@ -90,23 +97,28 @@ class ComponentDetailScreen extends ConsumerWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        Text(context.l10n.kmSinceInstall(
-                          Formatters.km(bike.totalKm - component.installedAtBikeKm),
-                          Formatters.km(component.expectedLifeKm),
-                        )),
-                        const SizedBox(height: 8),
-                        Text(context.l10n.installedAtKm(Formatters.km(component.installedAtBikeKm))),
+                        Text(
+                          context.l10n.kmSinceInstall(
+                            Formatters.km(kmSinceInstall),
+                            Formatters.km(component.expectedLifeKm),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: canReplace
-                        ? () => context.push('/components/${component.id}/replace')
-                        : null,
-                    child: Text(context.l10n.replaceComponent),
-                  ),
-                  const SizedBox(height: 24),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: canReplace
+                      ? () => context.push('/components/${component.id}/replace')
+                      : null,
+                  child: Text(context.l10n.replaceComponent),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton(
+                  onPressed: () => _showAdjustComponentKmSheet(context, ref, component, bike),
+                  child: Text(context.l10n.adjustComponentKm),
+                ),
+                const SizedBox(height: 24),
                   Text(
                     context.l10n.replacementHistory,
                     style: Theme.of(context).textTheme.titleMedium,
@@ -181,4 +193,69 @@ class ComponentDetailScreen extends ConsumerWidget {
     if (wear >= 0.7) return context.l10n.statusWatch;
     return context.l10n.statusOk;
   }
+
+  void _showAdjustComponentKmSheet(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentItem component,
+    BikeWithStats bike,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) {
+        final kmSinceInstall =
+            max(0, bike.totalKm - component.installedAtBikeKm).toInt();
+        final controller = TextEditingController(text: kmSinceInstall.toString());
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+            16,
+            16,
+            16,
+            16 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Text(
+                context.l10n.adjustComponentKm,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(labelText: context.l10n.componentKmLabel),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  final km = _parseInt(controller.text);
+                  if (km == null) return;
+                  final installedAt = bike.totalKm - km;
+                  await ref.read(componentRepositoryProvider).updateInstalledAtBikeKm(
+                        id: component.id,
+                        installedAtBikeKm: installedAt,
+                      );
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Text(context.l10n.saveLabel),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+int? _parseInt(String value) {
+  final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+  if (cleaned.isEmpty) return null;
+  return int.tryParse(cleaned);
 }

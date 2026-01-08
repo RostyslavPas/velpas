@@ -213,6 +213,24 @@ class ComponentDao {
     );
   }
 
+  Future<void> updateInstalledAtBikeKm({
+    required int id,
+    required int installedAtBikeKm,
+  }) async {
+    await _db.customUpdate(
+      '''
+      UPDATE components
+      SET installed_at_bike_km = ?
+      WHERE id = ?
+      ''',
+      variables: [
+        Variable<int>(installedAtBikeKm),
+        Variable<int>(id),
+      ],
+      updates: {_db.componentsTable},
+    );
+  }
+
   Future<int> replaceComponent({
     required ComponentItem oldComponent,
     required int removedAtBikeKm,

@@ -194,6 +194,36 @@ abstract class AppLocalizations {
   /// **'Syncing...'**
   String get syncingStrava;
 
+  /// No description provided for @fullSyncStrava.
+  ///
+  /// In en, this message translates to:
+  /// **'Full sync'**
+  String get fullSyncStrava;
+
+  /// No description provided for @fullSyncConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full sync Strava'**
+  String get fullSyncConfirmTitle;
+
+  /// No description provided for @fullSyncConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will import all Strava bikes and synchronize their total mileage.'**
+  String get fullSyncConfirmBody;
+
+  /// No description provided for @fullSyncConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync all'**
+  String get fullSyncConfirmAction;
+
+  /// No description provided for @fullSyncCancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get fullSyncCancelAction;
+
   /// No description provided for @connectedStatus.
   ///
   /// In en, this message translates to:
@@ -211,6 +241,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pro-only'**
   String get proOnlyStatus;
+
+  /// No description provided for @adjustBikeKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust mileage'**
+  String get adjustBikeKm;
+
+  /// No description provided for @currentTotalKmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current total: {km} km'**
+  String currentTotalKmLabel(Object km);
+
+  /// No description provided for @addKmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add km'**
+  String get addKmLabel;
+
+  /// No description provided for @setTotalKmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set total km'**
+  String get setTotalKmLabel;
+
+  /// No description provided for @adjustComponentKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust component mileage'**
+  String get adjustComponentKm;
+
+  /// No description provided for @componentKmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Component km since install'**
+  String get componentKmLabel;
 
   /// No description provided for @yourBikes.
   ///

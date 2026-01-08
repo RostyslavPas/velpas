@@ -58,6 +58,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get syncingStrava => 'Синхронізація...';
 
   @override
+  String get fullSyncStrava => 'Повна синхронізація';
+
+  @override
+  String get fullSyncConfirmTitle => 'Повна синхронізація Strava';
+
+  @override
+  String get fullSyncConfirmBody =>
+      'Ця дія імпортує всі велосипеди зі Strava та синхронізує їх загальний пробіг.';
+
+  @override
+  String get fullSyncConfirmAction => 'Синхронізувати';
+
+  @override
+  String get fullSyncCancelAction => 'Скасувати';
+
+  @override
   String get connectedStatus => 'Підключено';
 
   @override
@@ -65,6 +81,26 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get proOnlyStatus => 'Лише Pro';
+
+  @override
+  String get adjustBikeKm => 'Змінити пробіг';
+
+  @override
+  String currentTotalKmLabel(Object km) {
+    return 'Поточний пробіг: $km км';
+  }
+
+  @override
+  String get addKmLabel => 'Додати км';
+
+  @override
+  String get setTotalKmLabel => 'Встановити загальний пробіг';
+
+  @override
+  String get adjustComponentKm => 'Змінити пробіг компонента';
+
+  @override
+  String get componentKmLabel => 'Пробіг компонента від встановлення';
 
   @override
   String get yourBikes => 'Ваші велосипеди';

@@ -58,158 +58,170 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           VCard(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: Opacity(
-                      opacity: 0.08,
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: Transform.translate(
-                          offset: const Offset(0, -6),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: Image.asset(
-                              'assets/app_icon.png',
-                              fit: BoxFit.contain,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final iconSize =
+                    (constraints.maxWidth * 0.55).clamp(96.0, 180.0).toDouble();
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IgnorePointer(
+                        child: Opacity(
+                          opacity: 0.08,
+                          child: Transform.translate(
+                            offset: const Offset(0, -12),
+                            child: SizedBox(
+                              width: iconSize,
+                              height: iconSize,
+                              child: Image.asset(
+                                'assets/app_icon.png',
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    settingsAsync.when(
-                      data: (settings) {
-                        final lastSync = settings.lastSync;
-                        final lastSyncText = lastSync == null
-                            ? context.l10n.lastSyncNever
-                            : Formatters.dateTime(lastSync);
-                        final isPro = settings.isPro;
-                        final statusText = isPro
-                            ? (settings.stravaConnected
-                                ? context.l10n.connectedStatus
-                                : context.l10n.disconnectedStatus)
-                            : context.l10n.proOnlyStatus;
-                        final showStatus = !isPro || !settings.stravaConnected;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                                final lastSyncBlock = Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      context.l10n.lastSyncTitle,
-                                      style: Theme.of(context).textTheme.titleMedium,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        settingsAsync.when(
+                          data: (settings) {
+                            final lastSync = settings.lastSync;
+                            final lastSyncText = lastSync == null
+                                ? context.l10n.lastSyncNever
+                                : Formatters.dateTime(lastSync);
+                            final isPro = settings.isPro;
+                            final statusText = isPro
+                                ? (settings.stravaConnected
+                                    ? context.l10n.connectedStatus
+                                    : context.l10n.disconnectedStatus)
+                                : context.l10n.proOnlyStatus;
+                            final showStatus = !isPro || !settings.stravaConnected;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final lastSyncBlock = Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          context.l10n.lastSyncTitle,
+                                          style: Theme.of(context).textTheme.titleMedium,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(lastSyncText),
+                                      ],
+                                    );
+                                    final stravaBlock = Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        if (showStatus) Text(statusText),
+                                      ],
+                                    );
+                                    if (constraints.maxWidth < 360) {
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          lastSyncBlock,
+                                          const SizedBox(height: 12),
+                                          stravaBlock,
+                                        ],
+                                      );
+                                    }
+                                    return Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(child: lastSyncBlock),
+                                        const SizedBox(width: 16),
+                                        Expanded(child: stravaBlock),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                const Divider(height: 1),
+                                const SizedBox(height: 12),
+                                if (!isPro)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () => context.push('/paywall'),
+                                      child: Text(context.l10n.connectStrava),
                                     ),
-                                    const SizedBox(height: 6),
-                                    Text(lastSyncText),
-                                  ],
-                                );
-                                final stravaBlock = Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (showStatus) Text(statusText),
-                                  ],
-                                );
-                                if (constraints.maxWidth < 360) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  )
+                                else if (!settings.stravaConnected)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: _isSyncing
+                                          ? null
+                                          : () => _connectStrava(context),
+                                      child: Text(context.l10n.connectStrava),
+                                    ),
+                                  )
+                                else
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      lastSyncBlock,
-                                      const SizedBox(height: 12),
-                                      stravaBlock,
+                                      ElevatedButton.icon(
+                                        onPressed: _isSyncing
+                                            ? null
+                                            : () => _handleSync(context),
+                                        icon: _isSyncing
+                                            ? const SizedBox(
+                                                height: 16,
+                                                width: 16,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                ),
+                                              )
+                                            : const Icon(Icons.sync),
+                                        label: Text(
+                                          _isSyncing
+                                              ? context.l10n.syncingStrava
+                                              : context.l10n.syncStrava,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      OutlinedButton(
+                                        onPressed:
+                                            _isSyncing ? null : _disconnectStrava,
+                                        child: Text(context.l10n.disconnectStrava),
+                                      ),
                                     ],
-                                  );
-                                }
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(child: lastSyncBlock),
-                                    const SizedBox(width: 16),
-                                    Expanded(child: stravaBlock),
-                                  ],
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            const Divider(height: 1),
-                            const SizedBox(height: 12),
-                            if (!isPro)
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () => context.push('/paywall'),
-                                  child: Text(context.l10n.connectStrava),
-                                ),
-                              )
-                            else if (!settings.stravaConnected)
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed:
-                                      _isSyncing ? null : () => _connectStrava(context),
-                                  child: Text(context.l10n.connectStrava),
-                                ),
-                              )
-                            else
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  ElevatedButton.icon(
-                                    onPressed:
-                                        _isSyncing ? null : () => _handleSync(context),
-                                    icon: _isSyncing
-                                        ? const SizedBox(
-                                            height: 16,
-                                            width: 16,
-                                            child:
-                                                CircularProgressIndicator(strokeWidth: 2),
-                                          )
-                                        : const Icon(Icons.sync),
-                                    label: Text(
-                                      _isSyncing
-                                          ? context.l10n.syncingStrava
-                                          : context.l10n.syncStrava,
-                                    ),
                                   ),
-                                  const SizedBox(height: 8),
-                                  OutlinedButton(
-                                    onPressed: _isSyncing ? null : _disconnectStrava,
-                                    child: Text(context.l10n.disconnectStrava),
-                                  ),
-                                ],
-                              ),
-                          ],
-                        );
-                      },
-                      loading: () => const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: LinearProgressIndicator(),
-                      ),
-                      error: (_, __) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            context.l10n.lastSyncTitle,
-                            style: Theme.of(context).textTheme.titleMedium,
+                              ],
+                            );
+                          },
+                          loading: () => const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: LinearProgressIndicator(),
                           ),
-                          const SizedBox(height: 6),
-                          Text(context.l10n.lastSyncNever),
-                          const SizedBox(height: 12),
-                          Text(context.l10n.disconnectedStatus),
-                        ],
-                      ),
+                          error: (_, __) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                context.l10n.lastSyncTitle,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 6),
+                              Text(context.l10n.lastSyncNever),
+                              const SizedBox(height: 12),
+                              Text(context.l10n.disconnectedStatus),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                ),
-              ],
+                );
+              },
             ),
           ),
           const SizedBox(height: 16),
@@ -411,86 +423,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
       return;
     }
+    final primaryBikeId = settingsAsync.value?.primaryBikeId;
 
     final service = ref.read(stravaServiceProvider);
-    BikeImportResult? importResult;
-    if (mounted) {
-      setState(() => _isSyncing = true);
-    }
-    try {
-      importResult = await service.importBikes();
-    } on StravaAuthException catch (error) {
-      await ref.read(settingsControllerProvider.notifier).disconnectStrava();
-      if (context.mounted) {
-        final message = error.error == StravaAuthError.expired
-            ? context.l10n.stravaSessionExpired
-            : context.l10n.stravaConnectRequired;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      }
-      return;
-    } on Exception {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.stravaImportFailed)),
-        );
-      }
-      return;
-    } finally {
-      if (mounted) {
-        setState(() => _isSyncing = false);
-      }
-    }
-
     final bikes = await ref.read(bikesStreamProvider.future);
     if (bikes.isEmpty) {
-      if (context.mounted &&
-          importResult != null &&
-          (importResult.added > 0 || importResult.linked > 0)) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.l10n.stravaImportResult(
-                importResult.added,
-                importResult.linked,
-                importResult.skipped,
-              ),
-            ),
-          ),
+          SnackBar(content: Text(context.l10n.emptyGarageTitle)),
         );
       }
       return;
     }
 
-    final selectedBikeId = await _selectBike(context, bikes);
-    if (selectedBikeId == null) return;
+    final fallbackBikeId = _resolveFallbackBikeId(bikes, primaryBikeId);
+    if (fallbackBikeId == null) return;
 
     try {
       if (mounted) {
         setState(() => _isSyncing = true);
       }
-      final result = await service.syncBike(selectedBikeId);
+      final result = await service.syncBike(fallbackBikeId);
       await ref.read(settingsControllerProvider.notifier).setLastSync(DateTime.now());
-      await ref
-          .read(maintenanceAlertServiceProvider)
-          .checkAlerts(context, bikeId: selectedBikeId);
+      await ref.read(maintenanceAlertServiceProvider).checkAlerts(context);
 
       if (context.mounted) {
-        if (importResult != null &&
-            (importResult.added > 0 || importResult.linked > 0)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                context.l10n.stravaImportResult(
-                  importResult.added,
-                  importResult.linked,
-                  importResult.skipped,
-                ),
-              ),
-            ),
-          );
-        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.syncSuccess(result.added, result.summary()))),
         );
@@ -534,24 +491,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await ref.read(settingsControllerProvider.notifier).disconnectStrava();
   }
 
-  Future<int?> _selectBike(BuildContext context, List<BikeWithStats> bikes) async {
-    if (bikes.length == 1) return bikes.first.bike.id;
-    return showDialog<int>(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text(context.l10n.selectBike),
-          children: bikes
-              .map(
-                (bike) => SimpleDialogOption(
-                  onPressed: () => Navigator.of(context).pop(bike.bike.id),
-                  child: Text(bike.bike.name),
-                ),
-              )
-              .toList(),
-        );
-      },
-    );
+  int? _resolveFallbackBikeId(List<BikeWithStats> bikes, int? primaryBikeId) {
+    if (bikes.isEmpty) return null;
+    if (primaryBikeId == null) return bikes.first.bike.id;
+    for (final bike in bikes) {
+      if (bike.bike.id == primaryBikeId) {
+        return primaryBikeId;
+      }
+    }
+    return bikes.first.bike.id;
   }
 }
 

@@ -26,6 +26,7 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
   final _modelController = TextEditingController();
   final _lifeController = TextEditingController();
   final _priceController = TextEditingController();
+  final _initialKmController = TextEditingController(text: '0');
 
   @override
   void dispose() {
@@ -34,6 +35,7 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
     _modelController.dispose();
     _lifeController.dispose();
     _priceController.dispose();
+    _initialKmController.dispose();
     super.dispose();
   }
 
@@ -137,6 +139,13 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
+                      controller: _initialKmController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(labelText: context.l10n.componentKmLabel),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
                       controller: _priceController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(labelText: context.l10n.priceOptionalLabel),
@@ -150,6 +159,9 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                             ComponentDefaults.expectedLifeKm(
                               componentType,
                             );
+                        final initialKm = _parseInt(_initialKmController.text) ?? 0;
+                        final safeInitialKm = initialKm < 0 ? 0 : initialKm;
+                        final installKm = removedKm - safeInitialKm;
                         final price = double.tryParse(_priceController.text.trim());
 
                         final newComponentId =
@@ -161,6 +173,13 @@ class _ReplaceComponentScreenState extends ConsumerState<ReplaceComponentScreen>
                               newModel: _modelController.text.trim(),
                               expectedLifeKm: expected,
                               newPrice: price,
+                              newNotes: null,
+                            );
+                        await ref
+                            .read(componentRepositoryProvider)
+                            .updateInstalledAtBikeKm(
+                              id: newComponentId,
+                              installedAtBikeKm: installKm,
                             );
                         if (mounted) {
                           final router = GoRouter.of(context);

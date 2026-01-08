@@ -41,7 +41,7 @@ class StravaAuthException implements Exception {
 }
 
 abstract class StravaService {
-  Future<SyncResult> syncBike(int bikeId);
+  Future<SyncResult> syncBike(int bikeId, {bool fullSync = false});
   Future<BikeImportResult> importBikes();
 }
 
@@ -61,7 +61,7 @@ class RealStravaService implements StravaService {
   final StravaTokenService tokenService;
 
   @override
-  Future<SyncResult> syncBike(int bikeId) async {
+  Future<SyncResult> syncBike(int bikeId, {bool fullSync = false}) async {
     final tokens = await storage.getStravaTokens();
     if (tokens == null) {
       throw StravaAuthException(StravaAuthError.notConnected);
@@ -71,43 +71,34 @@ class RealStravaService implements StravaService {
       activeTokens = await _refreshTokens(activeTokens);
     }
 
-    final after = await storage.getLastSyncAt();
-    final bikes = await bikeRepository.fetchAllBikes();
-    Bike? currentBike;
-    for (final bike in bikes) {
-      if (bike.id == bikeId) {
-        currentBike = bike;
-        break;
-      }
+    if (fullSync) {
+      await rideRepository.deleteBySource('strava');
     }
-    if (currentBike != null &&
-        currentBike.stravaGearId != null &&
-        currentBike.manualKm > 0) {
-      final rideCount = await rideRepository.countRides(bikeId);
-      if (rideCount == 0) {
-        await bikeRepository.updateManualKm(bikeId, 0);
-      }
-    }
+    final after = fullSync ? null : await storage.getLastSyncAt();
     final activities = await _fetchActivities(activeTokens, after);
-    if (activities.isEmpty) {
-      return SyncResult(added: 0, totalDistanceKm: 0);
-    }
 
     final gearMap = await bikeRepository.fetchStravaBikeMap();
-    final imports = activities.map((activity) {
-      final distanceKm = max(0, (activity.distanceMeters / 1000).round());
-      final mappedBikeId =
-          activity.gearId == null ? null : gearMap[activity.gearId!];
-      return RideImportInput(
-        id: 'strava_${activity.id}',
-        bikeId: mappedBikeId ?? bikeId,
-        distanceKm: distanceKm,
-        dateTime: activity.startDate,
-        source: 'strava',
+    final imports = <RideImportInput>[];
+    for (final activity in activities) {
+      final gearId = activity.gearId;
+      if (gearId == null) continue;
+      final mappedBikeId = gearMap[gearId];
+      if (mappedBikeId == null) continue;
+      imports.add(
+        RideImportInput(
+          id: 'strava_${activity.id}',
+          bikeId: mappedBikeId,
+          distanceKm: max(0, (activity.distanceMeters / 1000).floor()),
+          dateTime: activity.startDate,
+          source: 'strava',
+        ),
       );
-    }).toList();
+    }
 
-    final result = await rideRepository.insertActivities(imports);
+    final result = imports.isEmpty
+        ? RideInsertResult(added: 0, totalDistanceKm: 0)
+        : await rideRepository.insertActivities(imports);
+    await _syncStravaBikeTotals(activeTokens);
     return SyncResult(added: result.added, totalDistanceKm: result.totalDistanceKm);
   }
 
@@ -155,12 +146,6 @@ class RealStravaService implements StravaService {
           .toList();
       if (existingByGear.isNotEmpty) {
         final existing = existingByGear.first;
-        if (existing.manualKm > 0) {
-          final rideCount = await rideRepository.countRides(existing.id);
-          if (rideCount > 0) {
-            await bikeRepository.updateManualKm(existing.id, 0);
-          }
-        }
         skipped += 1;
         continue;
       }
@@ -180,18 +165,12 @@ class RealStravaService implements StravaService {
           nameMatch.id,
           stravaBike.gearId,
         );
-        if (nameMatch.manualKm > 0) {
-          final rideCount = await rideRepository.countRides(nameMatch.id);
-          if (rideCount > 0) {
-            await bikeRepository.updateManualKm(nameMatch.id, 0);
-          }
-        }
         final index = localBikes.indexOf(nameMatch);
         if (index != -1) {
           localBikes[index] = Bike(
             id: nameMatch.id,
             name: nameMatch.name,
-            manualKm: nameMatch.manualKm > 0 ? 0 : nameMatch.manualKm,
+            manualKm: nameMatch.manualKm,
             createdAt: nameMatch.createdAt,
             purchasePrice: nameMatch.purchasePrice,
             photoPath: nameMatch.photoPath,
@@ -211,7 +190,7 @@ class RealStravaService implements StravaService {
         Bike(
           id: newId,
           name: stravaBike.name,
-          manualKm: stravaBike.distanceKm,
+          manualKm: 0,
           createdAt: DateTime.now(),
           stravaGearId: stravaBike.gearId,
         ),
@@ -271,6 +250,28 @@ class RealStravaService implements StravaService {
     }
   }
 
+  Future<void> _syncStravaBikeTotals(StravaTokens tokens) async {
+    final stravaBikes = await apiClient.fetchBikes(
+      accessToken: tokens.accessToken,
+    );
+    if (stravaBikes.isEmpty) return;
+    final localBikes = await bikeRepository.fetchAllBikes();
+    final localByGear = <String, Bike>{};
+    for (final bike in localBikes) {
+      final gearId = bike.stravaGearId;
+      if (gearId != null && gearId.isNotEmpty) {
+        localByGear[gearId] = bike;
+      }
+    }
+    for (final stravaBike in stravaBikes) {
+      final local = localByGear[stravaBike.gearId];
+      if (local == null) continue;
+      final ridesKm = await rideRepository.sumDistanceByBike(local.id);
+      final manualKm = stravaBike.distanceKm - ridesKm;
+      await bikeRepository.updateManualKm(local.id, manualKm);
+    }
+  }
+
   Future<List<StravaActivity>> _fetchActivities(StravaTokens tokens, DateTime? after) async {
     try {
       return await _fetchAllActivities(tokens, after);
@@ -323,7 +324,7 @@ class MockStravaService implements StravaService {
   final RideRepository _rideRepository;
 
   @override
-  Future<SyncResult> syncBike(int bikeId) async {
+  Future<SyncResult> syncBike(int bikeId, {bool fullSync = false}) async {
     final random = Random();
     final count = random.nextInt(3) + 1;
     final now = DateTime.now();
