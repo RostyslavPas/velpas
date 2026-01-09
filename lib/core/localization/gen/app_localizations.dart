@@ -854,6 +854,12 @@ abstract class AppLocalizations {
   /// **'Currency'**
   String get currencyTitle;
 
+  /// No description provided for @currencyProOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Available with PROS.TO Pro.'**
+  String get currencyProOnlyHint;
+
   /// No description provided for @currencyUsd.
   ///
   /// In en, this message translates to:
@@ -866,11 +872,215 @@ abstract class AppLocalizations {
   /// **'Euro (€)'**
   String get currencyEur;
 
+  /// No description provided for @currencyGbp.
+  ///
+  /// In en, this message translates to:
+  /// **'British Pound Sterling (£)'**
+  String get currencyGbp;
+
+  /// No description provided for @currencyJpy.
+  ///
+  /// In en, this message translates to:
+  /// **'Japanese Yen (¥)'**
+  String get currencyJpy;
+
+  /// No description provided for @currencyChf.
+  ///
+  /// In en, this message translates to:
+  /// **'Swiss Franc (CHF)'**
+  String get currencyChf;
+
+  /// No description provided for @currencyCny.
+  ///
+  /// In en, this message translates to:
+  /// **'Chinese Yuan (¥)'**
+  String get currencyCny;
+
+  /// No description provided for @currencyHkd.
+  ///
+  /// In en, this message translates to:
+  /// **'Hong Kong Dollar (HK\$)'**
+  String get currencyHkd;
+
+  /// No description provided for @currencySgd.
+  ///
+  /// In en, this message translates to:
+  /// **'Singapore Dollar (S\$)'**
+  String get currencySgd;
+
+  /// No description provided for @currencyKrw.
+  ///
+  /// In en, this message translates to:
+  /// **'South Korean Won (₩)'**
+  String get currencyKrw;
+
+  /// No description provided for @currencyInr.
+  ///
+  /// In en, this message translates to:
+  /// **'Indian Rupee (₹)'**
+  String get currencyInr;
+
+  /// No description provided for @currencyThb.
+  ///
+  /// In en, this message translates to:
+  /// **'Thai Baht (฿)'**
+  String get currencyThb;
+
+  /// No description provided for @currencyIdr.
+  ///
+  /// In en, this message translates to:
+  /// **'Indonesian Rupiah (Rp)'**
+  String get currencyIdr;
+
+  /// No description provided for @currencyMyr.
+  ///
+  /// In en, this message translates to:
+  /// **'Malaysian Ringgit (RM)'**
+  String get currencyMyr;
+
+  /// No description provided for @currencyPhp.
+  ///
+  /// In en, this message translates to:
+  /// **'Philippine Peso (₱)'**
+  String get currencyPhp;
+
+  /// No description provided for @currencyCad.
+  ///
+  /// In en, this message translates to:
+  /// **'Canadian Dollar (CA\$)'**
+  String get currencyCad;
+
+  /// No description provided for @currencyAud.
+  ///
+  /// In en, this message translates to:
+  /// **'Australian Dollar (A\$)'**
+  String get currencyAud;
+
+  /// No description provided for @currencyNzd.
+  ///
+  /// In en, this message translates to:
+  /// **'New Zealand Dollar (NZ\$)'**
+  String get currencyNzd;
+
+  /// No description provided for @currencyMxn.
+  ///
+  /// In en, this message translates to:
+  /// **'Mexican Peso (MX\$)'**
+  String get currencyMxn;
+
+  /// No description provided for @currencyBrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Brazilian Real (R\$)'**
+  String get currencyBrl;
+
+  /// No description provided for @currencyArs.
+  ///
+  /// In en, this message translates to:
+  /// **'Argentine Peso (AR\$)'**
+  String get currencyArs;
+
+  /// No description provided for @currencyClp.
+  ///
+  /// In en, this message translates to:
+  /// **'Chilean Peso (CLP\$)'**
+  String get currencyClp;
+
+  /// No description provided for @currencyCop.
+  ///
+  /// In en, this message translates to:
+  /// **'Colombian Peso (COP\$)'**
+  String get currencyCop;
+
+  /// No description provided for @currencyPln.
+  ///
+  /// In en, this message translates to:
+  /// **'Polish Zloty (zł)'**
+  String get currencyPln;
+
+  /// No description provided for @currencyCzk.
+  ///
+  /// In en, this message translates to:
+  /// **'Czech Koruna (Kč)'**
+  String get currencyCzk;
+
+  /// No description provided for @currencyHuf.
+  ///
+  /// In en, this message translates to:
+  /// **'Hungarian Forint (Ft)'**
+  String get currencyHuf;
+
+  /// No description provided for @currencySek.
+  ///
+  /// In en, this message translates to:
+  /// **'Swedish Krona (SEK)'**
+  String get currencySek;
+
+  /// No description provided for @currencyNok.
+  ///
+  /// In en, this message translates to:
+  /// **'Norwegian Krone (NOK)'**
+  String get currencyNok;
+
+  /// No description provided for @currencyDkk.
+  ///
+  /// In en, this message translates to:
+  /// **'Danish Krone (DKK)'**
+  String get currencyDkk;
+
+  /// No description provided for @currencyRon.
+  ///
+  /// In en, this message translates to:
+  /// **'Romanian Leu (RON)'**
+  String get currencyRon;
+
   /// No description provided for @currencyUah.
   ///
   /// In en, this message translates to:
   /// **'Ukrainian Hryvnia (₴)'**
   String get currencyUah;
+
+  /// No description provided for @currencyTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Turkish Lira (₺)'**
+  String get currencyTry;
+
+  /// No description provided for @currencyAed.
+  ///
+  /// In en, this message translates to:
+  /// **'UAE Dirham (AED)'**
+  String get currencyAed;
+
+  /// No description provided for @currencySar.
+  ///
+  /// In en, this message translates to:
+  /// **'Saudi Riyal (SAR)'**
+  String get currencySar;
+
+  /// No description provided for @currencyIls.
+  ///
+  /// In en, this message translates to:
+  /// **'Israeli New Shekel (₪)'**
+  String get currencyIls;
+
+  /// No description provided for @currencyZar.
+  ///
+  /// In en, this message translates to:
+  /// **'South African Rand (ZAR)'**
+  String get currencyZar;
+
+  /// No description provided for @currencyEgp.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian Pound (EGP)'**
+  String get currencyEgp;
+
+  /// No description provided for @currencyNgn.
+  ///
+  /// In en, this message translates to:
+  /// **'Nigerian Naira (NGN)'**
+  String get currencyNgn;
 
   /// No description provided for @primaryBikeTitle.
   ///

@@ -425,13 +425,118 @@ class AppLocalizationsUk extends AppLocalizations {
   String get currencyTitle => 'Валюта';
 
   @override
+  String get currencyProOnlyHint => 'Доступно лише для PROS.TO Pro.';
+
+  @override
   String get currencyUsd => 'Долар США (\$)';
 
   @override
   String get currencyEur => 'Євро (€)';
 
   @override
+  String get currencyGbp => 'Фунт стерлінгів (£)';
+
+  @override
+  String get currencyJpy => 'Японська єна (¥)';
+
+  @override
+  String get currencyChf => 'Швейцарський франк (CHF)';
+
+  @override
+  String get currencyCny => 'Китайський юань (¥)';
+
+  @override
+  String get currencyHkd => 'Гонконзький долар (HK\$)';
+
+  @override
+  String get currencySgd => 'Сінгапурський долар (S\$)';
+
+  @override
+  String get currencyKrw => 'Південнокорейська вона (₩)';
+
+  @override
+  String get currencyInr => 'Індійська рупія (₹)';
+
+  @override
+  String get currencyThb => 'Тайський бат (฿)';
+
+  @override
+  String get currencyIdr => 'Індонезійська рупія (Rp)';
+
+  @override
+  String get currencyMyr => 'Малайзійський рінґгіт (RM)';
+
+  @override
+  String get currencyPhp => 'Філіппінський песо (₱)';
+
+  @override
+  String get currencyCad => 'Канадський долар (CA\$)';
+
+  @override
+  String get currencyAud => 'Австралійський долар (A\$)';
+
+  @override
+  String get currencyNzd => 'Новозеландський долар (NZ\$)';
+
+  @override
+  String get currencyMxn => 'Мексиканський песо (MX\$)';
+
+  @override
+  String get currencyBrl => 'Бразильський реал (R\$)';
+
+  @override
+  String get currencyArs => 'Аргентинський песо (AR\$)';
+
+  @override
+  String get currencyClp => 'Чилійський песо (CLP\$)';
+
+  @override
+  String get currencyCop => 'Колумбійський песо (COP\$)';
+
+  @override
+  String get currencyPln => 'Польський злотий (zł)';
+
+  @override
+  String get currencyCzk => 'Чеська крона (Kč)';
+
+  @override
+  String get currencyHuf => 'Угорський форинт (Ft)';
+
+  @override
+  String get currencySek => 'Шведська крона (SEK)';
+
+  @override
+  String get currencyNok => 'Норвезька крона (NOK)';
+
+  @override
+  String get currencyDkk => 'Данська крона (DKK)';
+
+  @override
+  String get currencyRon => 'Румунський лей (RON)';
+
+  @override
   String get currencyUah => 'Гривня (₴)';
+
+  @override
+  String get currencyTry => 'Турецька ліра (₺)';
+
+  @override
+  String get currencyAed => 'Дирхам ОАЕ (AED)';
+
+  @override
+  String get currencySar => 'Саудівський ріал (SAR)';
+
+  @override
+  String get currencyIls => 'Ізраїльський новий шекель (₪)';
+
+  @override
+  String get currencyZar => 'Південноафриканський ранд (ZAR)';
+
+  @override
+  String get currencyEgp => 'Єгипетський фунт (EGP)';
+
+  @override
+  String get currencyNgn => 'Нігерійська найра (NGN)';
 
   @override
   String get primaryBikeTitle => 'Основний велосипед';

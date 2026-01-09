@@ -425,13 +425,118 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currencyTitle => 'Currency';
 
   @override
+  String get currencyProOnlyHint => 'Available with PROS.TO Pro.';
+
+  @override
   String get currencyUsd => 'US Dollar (\$)';
 
   @override
   String get currencyEur => 'Euro (€)';
 
   @override
+  String get currencyGbp => 'British Pound Sterling (£)';
+
+  @override
+  String get currencyJpy => 'Japanese Yen (¥)';
+
+  @override
+  String get currencyChf => 'Swiss Franc (CHF)';
+
+  @override
+  String get currencyCny => 'Chinese Yuan (¥)';
+
+  @override
+  String get currencyHkd => 'Hong Kong Dollar (HK\$)';
+
+  @override
+  String get currencySgd => 'Singapore Dollar (S\$)';
+
+  @override
+  String get currencyKrw => 'South Korean Won (₩)';
+
+  @override
+  String get currencyInr => 'Indian Rupee (₹)';
+
+  @override
+  String get currencyThb => 'Thai Baht (฿)';
+
+  @override
+  String get currencyIdr => 'Indonesian Rupiah (Rp)';
+
+  @override
+  String get currencyMyr => 'Malaysian Ringgit (RM)';
+
+  @override
+  String get currencyPhp => 'Philippine Peso (₱)';
+
+  @override
+  String get currencyCad => 'Canadian Dollar (CA\$)';
+
+  @override
+  String get currencyAud => 'Australian Dollar (A\$)';
+
+  @override
+  String get currencyNzd => 'New Zealand Dollar (NZ\$)';
+
+  @override
+  String get currencyMxn => 'Mexican Peso (MX\$)';
+
+  @override
+  String get currencyBrl => 'Brazilian Real (R\$)';
+
+  @override
+  String get currencyArs => 'Argentine Peso (AR\$)';
+
+  @override
+  String get currencyClp => 'Chilean Peso (CLP\$)';
+
+  @override
+  String get currencyCop => 'Colombian Peso (COP\$)';
+
+  @override
+  String get currencyPln => 'Polish Zloty (zł)';
+
+  @override
+  String get currencyCzk => 'Czech Koruna (Kč)';
+
+  @override
+  String get currencyHuf => 'Hungarian Forint (Ft)';
+
+  @override
+  String get currencySek => 'Swedish Krona (SEK)';
+
+  @override
+  String get currencyNok => 'Norwegian Krone (NOK)';
+
+  @override
+  String get currencyDkk => 'Danish Krone (DKK)';
+
+  @override
+  String get currencyRon => 'Romanian Leu (RON)';
+
+  @override
   String get currencyUah => 'Ukrainian Hryvnia (₴)';
+
+  @override
+  String get currencyTry => 'Turkish Lira (₺)';
+
+  @override
+  String get currencyAed => 'UAE Dirham (AED)';
+
+  @override
+  String get currencySar => 'Saudi Riyal (SAR)';
+
+  @override
+  String get currencyIls => 'Israeli New Shekel (₪)';
+
+  @override
+  String get currencyZar => 'South African Rand (ZAR)';
+
+  @override
+  String get currencyEgp => 'Egyptian Pound (EGP)';
+
+  @override
+  String get currencyNgn => 'Nigerian Naira (NGN)';
 
   @override
   String get primaryBikeTitle => 'Primary bike';

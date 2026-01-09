@@ -10,6 +10,10 @@ class ComponentRepository {
     return _componentDao.watchActiveByBike(bikeId);
   }
 
+  Future<List<ComponentItem>> fetchActiveByBike(int bikeId) {
+    return _componentDao.fetchActiveByBike(bikeId);
+  }
+
   Stream<ComponentItem?> watchComponent(int id) {
     return _componentDao.watchById(id);
   }
