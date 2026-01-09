@@ -25,6 +25,61 @@ class SettingsScreen extends ConsumerWidget {
         data: (settings) {
           final isPro = settings.isPro;
           final bikesAsync = ref.watch(garageBikesProvider);
+          final canChangeCurrency = isPro;
+          const basicCurrencies = {'USD', 'EUR', 'UAH'};
+          const basicOrder = ['UAH', 'USD', 'EUR'];
+          final currencyEntries = <MapEntry<String, String>>[
+            MapEntry('USD', context.l10n.currencyUsd),
+            MapEntry('EUR', context.l10n.currencyEur),
+            MapEntry('GBP', context.l10n.currencyGbp),
+            MapEntry('JPY', context.l10n.currencyJpy),
+            MapEntry('CHF', context.l10n.currencyChf),
+            MapEntry('CNY', context.l10n.currencyCny),
+            MapEntry('HKD', context.l10n.currencyHkd),
+            MapEntry('SGD', context.l10n.currencySgd),
+            MapEntry('KRW', context.l10n.currencyKrw),
+            MapEntry('INR', context.l10n.currencyInr),
+            MapEntry('THB', context.l10n.currencyThb),
+            MapEntry('IDR', context.l10n.currencyIdr),
+            MapEntry('MYR', context.l10n.currencyMyr),
+            MapEntry('PHP', context.l10n.currencyPhp),
+            MapEntry('CAD', context.l10n.currencyCad),
+            MapEntry('AUD', context.l10n.currencyAud),
+            MapEntry('NZD', context.l10n.currencyNzd),
+            MapEntry('MXN', context.l10n.currencyMxn),
+            MapEntry('BRL', context.l10n.currencyBrl),
+            MapEntry('ARS', context.l10n.currencyArs),
+            MapEntry('CLP', context.l10n.currencyClp),
+            MapEntry('COP', context.l10n.currencyCop),
+            MapEntry('PLN', context.l10n.currencyPln),
+            MapEntry('CZK', context.l10n.currencyCzk),
+            MapEntry('HUF', context.l10n.currencyHuf),
+            MapEntry('SEK', context.l10n.currencySek),
+            MapEntry('NOK', context.l10n.currencyNok),
+            MapEntry('DKK', context.l10n.currencyDkk),
+            MapEntry('RON', context.l10n.currencyRon),
+            MapEntry('UAH', context.l10n.currencyUah),
+            MapEntry('TRY', context.l10n.currencyTry),
+            MapEntry('AED', context.l10n.currencyAed),
+            MapEntry('SAR', context.l10n.currencySar),
+            MapEntry('ILS', context.l10n.currencyIls),
+            MapEntry('ZAR', context.l10n.currencyZar),
+            MapEntry('EGP', context.l10n.currencyEgp),
+            MapEntry('NGN', context.l10n.currencyNgn),
+          ];
+          final disabledTextStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              );
+          final highlightStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              );
+          final currencyLabels = Map<String, String>.fromEntries(currencyEntries);
+          final basicEntries = basicOrder
+              .map((code) => MapEntry(code, currencyLabels[code] ?? code))
+              .toList();
+          final proEntries =
+              currencyEntries.where((entry) => !basicCurrencies.contains(entry.key));
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -69,22 +124,59 @@ class SettingsScreen extends ConsumerWidget {
                     DropdownButtonFormField<String>(
                       value: settings.currencyCode,
                       items: [
-                        DropdownMenuItem(
-                          value: 'USD',
-                          child: Text(context.l10n.currencyUsd),
+                        ...basicEntries.map(
+                          (entry) => DropdownMenuItem(
+                            value: entry.key,
+                            child: Text(entry.value),
+                          ),
                         ),
-                        DropdownMenuItem(
-                          value: 'EUR',
-                          child: Text(context.l10n.currencyEur),
-                        ),
-                        DropdownMenuItem(
-                          value: 'UAH',
-                          child: Text(context.l10n.currencyUah),
+                        if (!canChangeCurrency)
+                          DropdownMenuItem(
+                            value: '__pro_only__',
+                            enabled: false,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.lock,
+                                  size: 16,
+                                  color: highlightStyle?.color,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Text(
+                                    context.l10n.currencyProOnlyHint,
+                                    style: highlightStyle,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ...proEntries.map(
+                          (entry) {
+                            final enabled = canChangeCurrency;
+                            return DropdownMenuItem(
+                              value: entry.key,
+                              enabled: enabled,
+                              child: Text(
+                                entry.value,
+                                style: enabled ? null : disabledTextStyle,
+                              ),
+                            );
+                          },
                         ),
                       ],
                       onChanged: (value) {
                         if (value == null) return;
-                        ref.read(settingsControllerProvider.notifier).setCurrencyCode(value);
+                        if (value == '__pro_only__') return;
+                        if (!canChangeCurrency && !basicCurrencies.contains(value)) {
+                          _showProRequired(context);
+                          return;
+                        }
+                        ref
+                            .read(settingsControllerProvider.notifier)
+                            .setCurrencyCode(value);
                       },
                     ),
                   ],
@@ -397,4 +489,10 @@ int? _resolveFallbackBikeId(List<BikeWithStats> bikes, int? primaryBikeId) {
     }
   }
   return bikes.first.bike.id;
+}
+
+void _showProRequired(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(context.l10n.proRequiredMessage)),
+  );
 }

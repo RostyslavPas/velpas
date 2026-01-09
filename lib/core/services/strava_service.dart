@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import '../utils/formatters.dart';
 import '../../data/repositories/ride_repository.dart';
 import '../../data/repositories/bike_repository.dart';
+import '../../data/repositories/component_repository.dart';
 import '../../data/models/ride_models.dart';
 import '../../data/models/bike_models.dart';
 import '../models/strava_models.dart';
@@ -50,6 +51,7 @@ class RealStravaService implements StravaService {
     required this.apiClient,
     required this.rideRepository,
     required this.bikeRepository,
+    required this.componentRepository,
     required this.storage,
     required this.tokenService,
   });
@@ -57,6 +59,7 @@ class RealStravaService implements StravaService {
   final StravaApiClient apiClient;
   final RideRepository rideRepository;
   final BikeRepository bikeRepository;
+  final ComponentRepository componentRepository;
   final SecureStorageService storage;
   final StravaTokenService tokenService;
 
@@ -71,6 +74,8 @@ class RealStravaService implements StravaService {
       activeTokens = await _refreshTokens(activeTokens);
     }
 
+    final componentKmByBike =
+        fullSync ? await _snapshotComponentKmByBike() : null;
     if (fullSync) {
       await rideRepository.deleteBySource('strava');
     }
@@ -98,7 +103,10 @@ class RealStravaService implements StravaService {
     final result = imports.isEmpty
         ? RideInsertResult(added: 0, totalDistanceKm: 0)
         : await rideRepository.insertActivities(imports);
-    await _syncStravaBikeTotals(activeTokens);
+    await _syncStravaBikeTotals(
+      activeTokens,
+      componentKmByBike: componentKmByBike,
+    );
     return SyncResult(added: result.added, totalDistanceKm: result.totalDistanceKm);
   }
 
@@ -250,7 +258,10 @@ class RealStravaService implements StravaService {
     }
   }
 
-  Future<void> _syncStravaBikeTotals(StravaTokens tokens) async {
+  Future<void> _syncStravaBikeTotals(
+    StravaTokens tokens, {
+    Map<int, Map<int, int>>? componentKmByBike,
+  }) async {
     final stravaBikes = await apiClient.fetchBikes(
       accessToken: tokens.accessToken,
     );
@@ -267,9 +278,36 @@ class RealStravaService implements StravaService {
       final local = localByGear[stravaBike.gearId];
       if (local == null) continue;
       final ridesKm = await rideRepository.sumDistanceByBike(local.id);
-      final manualKm = stravaBike.distanceKm - ridesKm;
-      await bikeRepository.updateManualKm(local.id, manualKm);
+      final newManualKm = stravaBike.distanceKm - ridesKm;
+      await bikeRepository.updateManualKm(local.id, newManualKm);
+      final componentKm = componentKmByBike?[local.id];
+      if (componentKm == null) continue;
+      for (final entry in componentKm.entries) {
+        final newInstalledAt = stravaBike.distanceKm - entry.value;
+        await componentRepository.updateInstalledAtBikeKm(
+          id: entry.key,
+          installedAtBikeKm: newInstalledAt,
+        );
+      }
     }
+  }
+
+  Future<Map<int, Map<int, int>>> _snapshotComponentKmByBike() async {
+    final bikes = await bikeRepository.fetchAllBikes();
+    final result = <int, Map<int, int>>{};
+    for (final bike in bikes) {
+      if (bike.stravaGearId == null) continue;
+      final ridesKm = await rideRepository.sumDistanceByBike(bike.id);
+      final totalKm = bike.manualKm + ridesKm;
+      final components = await componentRepository.fetchActiveByBike(bike.id);
+      if (components.isEmpty) continue;
+      final kmMap = <int, int>{};
+      for (final component in components) {
+        kmMap[component.id] = totalKm - component.installedAtBikeKm;
+      }
+      result[bike.id] = kmMap;
+    }
+    return result;
   }
 
   Future<List<StravaActivity>> _fetchActivities(StravaTokens tokens, DateTime? after) async {

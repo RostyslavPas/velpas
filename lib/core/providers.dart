@@ -113,6 +113,7 @@ final stravaServiceProvider = Provider<StravaService>((ref) {
     apiClient: ref.watch(stravaApiClientProvider),
     rideRepository: ref.watch(rideRepositoryProvider),
     bikeRepository: ref.watch(bikeRepositoryProvider),
+    componentRepository: ref.watch(componentRepositoryProvider),
     storage: ref.watch(secureStorageServiceProvider),
     tokenService: ref.watch(stravaTokenServiceProvider),
   );

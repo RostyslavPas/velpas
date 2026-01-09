@@ -22,6 +22,19 @@ class ComponentDao {
         .map((rows) => rows.map(_mapComponent).toList());
   }
 
+  Future<List<ComponentItem>> fetchActiveByBike(int bikeId) async {
+    final rows = await _db.customSelect(
+      '''
+      SELECT * FROM components
+      WHERE bike_id = ? AND is_active = 1
+      ORDER BY id DESC
+      ''',
+      variables: [Variable<int>(bikeId)],
+      readsFrom: {_db.componentsTable},
+    ).get();
+    return rows.map(_mapComponent).toList();
+  }
+
   Stream<ComponentItem?> watchById(int id) {
     return _db
         .customSelect(
