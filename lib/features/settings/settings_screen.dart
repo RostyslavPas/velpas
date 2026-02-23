@@ -13,6 +13,36 @@ import 'settings_controller.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  Widget _backgroundCard(BuildContext context, Widget child, {VoidCallback? onTap}) {
+    return VCard(
+      onTap: onTap,
+      padding: EdgeInsets.zero,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Opacity(
+                  opacity: 0.12,
+                  child: Image.asset(
+                    'assets/w13.png',
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: child,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsAsync = ref.watch(settingsControllerProvider);
@@ -28,6 +58,26 @@ class SettingsScreen extends ConsumerWidget {
           final canChangeCurrency = isPro;
           const basicCurrencies = {'USD', 'EUR', 'UAH'};
           const basicOrder = ['UAH', 'USD', 'EUR'];
+          final canChangeLanguage = isPro;
+          final basicLanguages = <Locale>[
+            const Locale('en'),
+            const Locale('uk'),
+          ];
+          final proLanguages = <Locale>[
+            const Locale('es'),
+            const Locale('fr'),
+            const Locale('it'),
+            Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+          ];
+          final languageLabels = <Locale, String>{
+            const Locale('en'): context.l10n.languageEnglish,
+            const Locale('uk'): context.l10n.languageUkrainian,
+            const Locale('es'): context.l10n.languageSpanish,
+            const Locale('fr'): context.l10n.languageFrench,
+            const Locale('it'): context.l10n.languageItalian,
+            Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'):
+                context.l10n.languageChinese,
+          };
           final currencyEntries = <MapEntry<String, String>>[
             MapEntry('USD', context.l10n.currencyUsd),
             MapEntry('EUR', context.l10n.currencyEur),
@@ -80,11 +130,17 @@ class SettingsScreen extends ConsumerWidget {
               .toList();
           final proEntries =
               currencyEntries.where((entry) => !basicCurrencies.contains(entry.key));
+          final proLanguageValue = const Locale('pro');
+          final basicLanguageEntries =
+              basicLanguages.map((locale) => MapEntry(locale, languageLabels[locale] ?? ''));
+          final proLanguageEntries =
+              proLanguages.map((locale) => MapEntry(locale, languageLabels[locale] ?? ''));
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              VCard(
-                child: Column(
+              _backgroundCard(
+                context,
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -94,17 +150,55 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 8),
                     DropdownButtonFormField<Locale>(
                       value: settings.locale ?? const Locale('en'),
+                      isExpanded: true,
                       items: [
-                        DropdownMenuItem(
-                          value: const Locale('en'),
-                          child: Text(context.l10n.languageEnglish),
+                        ...basicLanguageEntries.map(
+                          (entry) => DropdownMenuItem(
+                            value: entry.key,
+                            child: Text(entry.value),
+                          ),
                         ),
-                        DropdownMenuItem(
-                          value: const Locale('uk'),
-                          child: Text(context.l10n.languageUkrainian),
+                        if (!canChangeLanguage)
+                          DropdownMenuItem(
+                            value: proLanguageValue,
+                            enabled: false,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.lock,
+                                  size: 16,
+                                  color: highlightStyle?.color,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Text(
+                                    context.l10n.languageProOnlyHint,
+                                    style: highlightStyle,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ...proLanguageEntries.map(
+                          (entry) => DropdownMenuItem(
+                            value: entry.key,
+                            enabled: canChangeLanguage,
+                            child: Text(
+                              entry.value,
+                              style: canChangeLanguage ? null : disabledTextStyle,
+                            ),
+                          ),
                         ),
                       ],
                       onChanged: (locale) {
+                        if (locale == null || locale == proLanguageValue) return;
+                        if (!canChangeLanguage &&
+                            !basicLanguages.any((item) => item == locale)) {
+                          _showProRequired(context);
+                          return;
+                        }
                         ref.read(settingsControllerProvider.notifier).setLocale(locale);
                       },
                     ),
@@ -112,8 +206,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              VCard(
-                child: Column(
+              _backgroundCard(
+                context,
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -123,6 +218,7 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
                       value: settings.currencyCode,
+                      isExpanded: true,
                       items: [
                         ...basicEntries.map(
                           (entry) => DropdownMenuItem(
@@ -183,8 +279,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              VCard(
-                child: bikesAsync.when(
+              _backgroundCard(
+                context,
+                bikesAsync.when(
                   data: (bikes) {
                     if (bikes.isEmpty) {
                       return Text(context.l10n.primaryBikeEmpty);
@@ -232,8 +329,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              VCard(
-                child: SwitchListTile(
+              _backgroundCard(
+                context,
+                SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(context.l10n.biometricToggleTitle),
                   subtitle: Text(context.l10n.biometricToggleSubtitle),
@@ -249,34 +347,58 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               VCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.subscriptionTitle,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(isPro ? context.l10n.proStatus : context.l10n.freeStatus),
-                    const SizedBox(height: 12),
-                    if (!isPro)
-                      ElevatedButton(
-                        onPressed: () => context.push('/paywall'),
-                        child: Text(context.l10n.upgradeToPro),
+                padding: EdgeInsets.zero,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Opacity(
+                            opacity: 0.16,
+                            child: Image.asset(
+                              'assets/w10.png',
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                            ),
+                          ),
+                        ),
                       ),
-                    if (isPro)
-                      OutlinedButton(
-                        onPressed: () => ref
-                            .read(settingsControllerProvider.notifier)
-                            .setPro(false),
-                        child: Text(context.l10n.cancelPro),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              context.l10n.subscriptionTitle,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(isPro ? context.l10n.proStatus : context.l10n.freeStatus),
+                            const SizedBox(height: 12),
+                            if (!isPro)
+                              ElevatedButton(
+                                onPressed: () => context.push('/paywall'),
+                                child: Text(context.l10n.upgradeToPro),
+                              ),
+                            if (isPro)
+                              OutlinedButton(
+                                onPressed: () => ref
+                                    .read(settingsControllerProvider.notifier)
+                                    .setPro(false),
+                                child: Text(context.l10n.cancelPro),
+                              ),
+                          ],
+                        ),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
-              VCard(
-                child: Column(
+              _backgroundCard(
+                context,
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -338,14 +460,15 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              VCard(
-                onTap: () => context.push('/settings/about'),
-                child: Row(
+              _backgroundCard(
+                context,
+                Row(
                   children: [
                     Expanded(child: Text(context.l10n.aboutTitle)),
                     const Icon(Icons.chevron_right),
                   ],
                 ),
+                onTap: () => context.push('/settings/about'),
               ),
             ],
           );

@@ -5,3 +5,7 @@ output-class: AppLocalizations
 preferred-supported-locales:
   - en
   - uk
+  - es
+  - fr
+  - it
+  - zh_Hans
