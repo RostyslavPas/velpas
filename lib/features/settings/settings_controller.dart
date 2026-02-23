@@ -54,7 +54,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     final localeCode = await storage.getLocaleCode();
     final tokens = await storage.getStravaTokens();
     return SettingsState(
-      locale: localeCode == null ? const Locale('en') : Locale(localeCode),
+      locale: localeCode == null ? const Locale('en') : _parseLocale(localeCode),
       biometricsEnabled: await storage.getBiometricsEnabled(),
       isPro: await storage.getProStatus(),
       hadPro: await storage.getHadPro(),
@@ -68,7 +68,7 @@ class SettingsController extends AsyncNotifier<SettingsState> {
   Future<void> setLocale(Locale? locale) async {
     final storage = ref.read(secureStorageServiceProvider);
     final safeLocale = locale ?? const Locale('en');
-    await storage.setLocaleCode(safeLocale.languageCode);
+    await storage.setLocaleCode(_localeTag(safeLocale));
     state = AsyncData(state.value!.copyWith(locale: safeLocale));
   }
 
@@ -153,6 +153,35 @@ class SettingsController extends AsyncNotifier<SettingsState> {
     await storage.setCurrencyCode(code);
     state = AsyncData(state.value!.copyWith(currencyCode: code));
   }
+}
+
+Locale _parseLocale(String code) {
+  if (code.isEmpty) return const Locale('en');
+  final parts = code.split(RegExp('[-_]'));
+  if (parts.length == 1) return Locale(parts[0]);
+  final language = parts[0];
+  final part1 = parts[1];
+  if (part1.length == 4) {
+    final region = parts.length > 2 ? parts[2] : null;
+    return Locale.fromSubtags(
+      languageCode: language,
+      scriptCode: part1,
+      countryCode: region,
+    );
+  }
+  return Locale(language, part1);
+}
+
+String _localeTag(Locale locale) {
+  final script = locale.scriptCode;
+  if (script != null && script.isNotEmpty) {
+    return '${locale.languageCode}-$script';
+  }
+  final region = locale.countryCode;
+  if (region != null && region.isNotEmpty) {
+    return '${locale.languageCode}-$region';
+  }
+  return locale.languageCode;
 }
 
 final settingsControllerProvider =

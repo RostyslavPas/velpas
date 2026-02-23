@@ -15,6 +15,8 @@ enum ComponentType {
   cockpit('cockpit'),
   stem('stem'),
   barTape('barTape'),
+  pedals('pedals'),
+  saddle('saddle'),
   other('other');
 
   const ComponentType(this.id);
@@ -53,6 +55,10 @@ class ComponentDefaults {
         return 50000;
       case ComponentType.barTape:
         return 2500;
+      case ComponentType.pedals:
+        return 30000;
+      case ComponentType.saddle:
+        return 40000;
       case ComponentType.shifters:
         return 40000;
       case ComponentType.rearDerailleur:
@@ -92,6 +98,10 @@ class ComponentDefaults {
         return l10n.componentTypeStem;
       case ComponentType.barTape:
         return l10n.componentTypeBarTape;
+      case ComponentType.pedals:
+        return l10n.componentTypePedals;
+      case ComponentType.saddle:
+        return l10n.componentTypeSaddle;
       case ComponentType.other:
         return l10n.componentTypeOther;
     }
@@ -116,6 +126,8 @@ ComponentCategory categoryFor(ComponentType type) {
     case ComponentType.cockpit:
     case ComponentType.stem:
     case ComponentType.barTape:
+    case ComponentType.pedals:
+    case ComponentType.saddle:
       return ComponentCategory.cockpit;
     case ComponentType.other:
       return ComponentCategory.other;

@@ -22,19 +22,31 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get aboutDescription =>
-      'PROS.TO — це преміальний застосунок для велосипедистів, які дбають про свою техніку.\nТрекай пробіг і знос кожного компонента, зберігай історію замін і розумій реальну вартість свого сетапу.\nТемний мінімалістичний інтерфейс із теплими металевими акцентами створений для зручності та фокусу.\n\nОсновні можливості:\n• Гараж велосипедів із фото та вартістю\n• Трекінг пробігу і зносу компонентів\n• Історія замін та аналіз витрат\n• Гардероб екіпірування (шоломи, велотуфлі, форма тощо)\n• Робота офлайн\n• Захист через Face ID / Touch ID\n• Англійська та українська мови\n\nPROS.TO Pro:\n• Синхронізація зі Strava (автоматичний пробіг)\n• Необмежено велосипедів і компонентів';
+      'PROS.TO — це преміальний застосунок для велосипедистів, які дбають про свою техніку.\nТрекай пробіг і знос кожного компонента, зберігай історію замін і розумій реальну вартість свого сетапу.\nТемний мінімалістичний інтерфейс із теплими металевими акцентами створений для зручності та фокусу.\n\nОсновні можливості:\n• Гараж велосипедів із фото та вартістю\n• Трекінг пробігу і зносу компонентів\n• Історія замін та аналіз витрат\n• Гардероб екіпірування (шоломи, велотуфлі, форма тощо)\n• Робота офлайн\n• Захист через Face ID / Touch ID\n• Англійська, українська, іспанська, французька, італійська та китайська (спрощена) мови\n\nPROS.TO Pro:\n• Синхронізація зі Strava (автоматичний пробіг)\n• Необмежено велосипедів і компонентів';
 
   @override
   String get homeTitle => 'Головна';
 
   @override
+  String get homeTab => 'Головна';
+
+  @override
   String get garageTitle => 'Гараж';
+
+  @override
+  String get garageTab => 'Гараж';
 
   @override
   String get wardrobeTitle => 'Гардероб';
 
   @override
+  String get wardrobeTab => 'Гардероб';
+
+  @override
   String get insightsTitle => 'Аналітика';
+
+  @override
+  String get insightsTab => 'Аналітика';
 
   @override
   String get settingsTitle => 'Налаштування';
@@ -258,6 +270,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get componentTypeBarTape => 'Обмотка руля';
 
   @override
+  String get componentTypePedals => 'Педалі';
+
+  @override
+  String get componentTypeSaddle => 'Сідло';
+
+  @override
   String get componentTypeOther => 'Інше';
 
   @override
@@ -422,6 +440,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get languageTitle => 'Мова';
 
   @override
+  String get languageProOnlyHint => 'Додаткові мови доступні в PROS.TO Pro.';
+
+  @override
   String get currencyTitle => 'Валюта';
 
   @override
@@ -551,10 +572,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get primaryBikeEmpty => 'Додайте велосипед, щоб вибрати основний.';
 
   @override
-  String get languageEnglish => 'English';
+  String get languageEnglish => 'Англійська';
 
   @override
   String get languageUkrainian => 'Українська';
+
+  @override
+  String get languageSpanish => 'Іспанська';
+
+  @override
+  String get languageFrench => 'Французька';
+
+  @override
+  String get languageItalian => 'Італійська';
+
+  @override
+  String get languageChinese => 'Китайська (спрощена)';
 
   @override
   String get biometricToggleTitle => 'Розблокування FaceID/TouchID';

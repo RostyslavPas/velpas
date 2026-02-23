@@ -22,19 +22,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutDescription =>
-      'PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English & Ukrainian language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components';
+      'PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English, Ukrainian, Spanish, French, Italian, and Simplified Chinese language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components';
 
   @override
   String get homeTitle => 'Home';
 
   @override
+  String get homeTab => 'Home';
+
+  @override
   String get garageTitle => 'Garage';
+
+  @override
+  String get garageTab => 'Garage';
 
   @override
   String get wardrobeTitle => 'Wardrobe';
 
   @override
+  String get wardrobeTab => 'Gear';
+
+  @override
   String get insightsTitle => 'Insights';
+
+  @override
+  String get insightsTab => 'Insights';
 
   @override
   String get settingsTitle => 'Settings';
@@ -258,6 +270,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get componentTypeBarTape => 'Handlebar tape';
 
   @override
+  String get componentTypePedals => 'Pedals';
+
+  @override
+  String get componentTypeSaddle => 'Saddle';
+
+  @override
   String get componentTypeOther => 'Other';
 
   @override
@@ -422,6 +440,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageTitle => 'Language';
 
   @override
+  String get languageProOnlyHint =>
+      'Additional languages available with PROS.TO Pro.';
+
+  @override
   String get currencyTitle => 'Currency';
 
   @override
@@ -555,6 +577,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageUkrainian => 'Ukrainian';
+
+  @override
+  String get languageSpanish => 'Spanish';
+
+  @override
+  String get languageFrench => 'French';
+
+  @override
+  String get languageItalian => 'Italian';
+
+  @override
+  String get languageChinese => 'Chinese (Simplified)';
 
   @override
   String get biometricToggleTitle => 'FaceID/TouchID unlock';

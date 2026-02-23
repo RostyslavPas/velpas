@@ -32,6 +32,15 @@ flutter:
   generate: true
   assets:
     - assets/app_icon.png
+    - assets/wardrobe/
+    - assets/w1.png
+    - assets/w4.png
+    - assets/w10.png
+    - assets/w11.png
+    - assets/w7.png
+    - assets/w13.png
+    - assets/w2.png
+    - assets/w22.png
 
 flutter_intl:
   enabled: true

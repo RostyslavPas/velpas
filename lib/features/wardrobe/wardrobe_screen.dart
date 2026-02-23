@@ -70,21 +70,44 @@ class WardrobeScreen extends ConsumerWidget {
                   );
                   return VCard(
                     onTap: () => context.push('/wardrobe/category/${category.id}'),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _categoryLabel(context, category.id),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          Formatters.price(total.totalValue, currencyCode: currencyCode),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(context.l10n.itemsCount(total.totalItems)),
-                      ],
+                    padding: EdgeInsets.zero,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: Opacity(
+                                opacity: 0.18,
+                                child: Image.asset(
+                                  _categoryIconPath(category.id),
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _categoryLabel(context, category.id),
+                                  style: Theme.of(context).textTheme.titleSmall,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  Formatters.price(total.totalValue, currencyCode: currencyCode),
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(context.l10n.itemsCount(total.totalItems)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
@@ -119,5 +142,9 @@ class WardrobeScreen extends ConsumerWidget {
       default:
         return id;
     }
+  }
+
+  String _categoryIconPath(String id) {
+    return 'assets/wardrobe/$id.png';
   }
 }

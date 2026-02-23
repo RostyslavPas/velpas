@@ -92,7 +92,11 @@ class BikeDetailScreen extends ConsumerWidget {
                               _showProRequired(context);
                               return;
                             }
-                            _showAddComponentSheet(context, bike.totalKm, componentCount);
+                            _showAddComponentSheet(
+                              context,
+                              bike.totalKm,
+                              componentCount,
+                            );
                           },
                     icon: const Icon(Icons.add),
                     label: Text(context.l10n.addComponent),
@@ -439,102 +443,118 @@ class _AddComponentSheetState extends ConsumerState<_AddComponentSheet> {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + viewInsets.bottom),
-      child: ListView(
-        shrinkWrap: true,
+      child: Stack(
         children: [
-          Text(context.l10n.addComponent, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          DropdownButtonFormField<ComponentType>(
-            value: _type,
-            items: ComponentType.values
-                .map(
-                  (type) => DropdownMenuItem(
-                    value: type,
-                    child: Text(ComponentDefaults.label(type, context.l10n)),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              if (value == null) return;
-              setState(() {
-                _type = value;
-                _lifeController.text = ComponentDefaults.expectedLifeKm(value).toString();
-              });
-            },
-            decoration: InputDecoration(labelText: context.l10n.componentType),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _brandController,
-            decoration: InputDecoration(
-              labelText:
-                  isOther ? context.l10n.componentNameLabel : context.l10n.brandLabel,
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.1,
+                child: Image.asset(
+                  'assets/w1.png',
+                  fit: BoxFit.contain,
+                  alignment: const Alignment(0.85, -0.2),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _modelController,
-            decoration: InputDecoration(
-              labelText: isOther
-                  ? context.l10n.componentDetailsOptionalLabel
-                  : context.l10n.modelLabel,
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _lifeController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(labelText: context.l10n.expectedLifeLabel),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _initialKmController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(labelText: context.l10n.componentKmLabel),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _priceController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: context.l10n.priceOptionalLabel),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () async {
-              final settings = ref.read(settingsControllerProvider).value;
-              final isCancelled = settings != null && !settings.isPro && settings.hadPro;
-              final isFree = settings != null && !settings.isPro && !settings.hadPro;
-              if (isCancelled || (isFree && widget.currentCount >= 5)) {
-                if (context.mounted) {
-                  _showProRequired(context);
-                }
-                return;
-              }
-              final brand = _brandController.text.trim();
-              final model = _modelController.text.trim();
-              if (brand.isEmpty || (!isOther && model.isEmpty)) return;
-              final expected = _parseInt(_lifeController.text) ??
-                  ComponentDefaults.expectedLifeKm(_type);
-              final initialKm = _parseInt(_initialKmController.text) ?? 0;
-              final safeInitialKm = initialKm < 0 ? 0 : initialKm;
-              final installedAt = widget.bikeTotalKm - safeInitialKm;
-              final price = double.tryParse(_priceController.text.trim());
-              await ref.read(componentRepositoryProvider).addComponent(
-                    bikeId: widget.bikeId,
-                    type: _type.id,
-                    brand: brand,
-                    model: model,
-                    expectedLifeKm: expected,
-                    installedAtBikeKm: installedAt,
-                    price: price,
-                  );
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text(context.l10n.saveLabel),
+          ListView(
+            shrinkWrap: true,
+            children: [
+              Text(context.l10n.addComponent, style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<ComponentType>(
+                value: _type,
+                items: ComponentType.values
+                    .map(
+                      (type) => DropdownMenuItem(
+                        value: type,
+                        child: Text(ComponentDefaults.label(type, context.l10n)),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _type = value;
+                    _lifeController.text = ComponentDefaults.expectedLifeKm(value).toString();
+                  });
+                },
+                decoration: InputDecoration(labelText: context.l10n.componentType),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _brandController,
+                decoration: InputDecoration(
+                  labelText:
+                      isOther ? context.l10n.componentNameLabel : context.l10n.brandLabel,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _modelController,
+                decoration: InputDecoration(
+                  labelText: isOther
+                      ? context.l10n.componentDetailsOptionalLabel
+                      : context.l10n.modelLabel,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _lifeController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(labelText: context.l10n.expectedLifeLabel),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _initialKmController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(labelText: context.l10n.componentKmLabel),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _priceController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: context.l10n.priceOptionalLabel),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  final settings = ref.read(settingsControllerProvider).value;
+                  final isCancelled = settings != null && !settings.isPro && settings.hadPro;
+                  final isFree = settings != null && !settings.isPro && !settings.hadPro;
+                  if (isCancelled || (isFree && widget.currentCount >= 5)) {
+                    if (context.mounted) {
+                      _showProRequired(context);
+                    }
+                    return;
+                  }
+                  final brand = _brandController.text.trim();
+                  final model = _modelController.text.trim();
+                  if (brand.isEmpty || (!isOther && model.isEmpty)) return;
+                  final expected = _parseInt(_lifeController.text) ??
+                      ComponentDefaults.expectedLifeKm(_type);
+                  final initialKm = _parseInt(_initialKmController.text) ?? 0;
+                  final safeInitialKm = initialKm < 0 ? 0 : initialKm;
+                  final installedAt = widget.bikeTotalKm - safeInitialKm;
+                  final price = double.tryParse(_priceController.text.trim());
+                  await ref.read(componentRepositoryProvider).addComponent(
+                        bikeId: widget.bikeId,
+                        type: _type.id,
+                        brand: brand,
+                        model: model,
+                        expectedLifeKm: expected,
+                        installedAtBikeKm: installedAt,
+                        price: price,
+                      );
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Text(context.l10n.saveLabel),
+              ),
+            ],
           ),
         ],
       ),

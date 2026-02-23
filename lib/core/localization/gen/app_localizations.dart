@@ -6,7 +6,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_it.dart';
 import 'app_localizations_uk.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +99,12 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('uk')
+    Locale('uk'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('it'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+    Locale('zh')
   ];
 
   /// No description provided for @appName.
@@ -125,7 +134,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutDescription.
   ///
   /// In en, this message translates to:
-  /// **'PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English & Ukrainian language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components'**
+  /// **'PROS.TO is a premium cycling app built for riders who care about their equipment.\nTrack mileage and wear for every bike component, keep replacement history, and understand the true cost of your setup.\nDesigned with a dark, minimal interface and warm metallic accents for clarity and focus.\n\nKey features:\n• Bike garage with photos and value\n• Component mileage & wear tracking\n• Replacement history and cost insights\n• Cycling gear wardrobe (helmets, shoes, kits and more)\n• Offline-first performance\n• Face ID / Touch ID app lock\n• English, Ukrainian, Spanish, French, Italian, and Simplified Chinese language support\n\nPROS.TO Pro:\n• Strava sync (automatic mileage updates)\n• Unlimited bikes and components'**
   String get aboutDescription;
 
   /// No description provided for @homeTitle.
@@ -134,11 +143,23 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get homeTitle;
 
+  /// No description provided for @homeTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTab;
+
   /// No description provided for @garageTitle.
   ///
   /// In en, this message translates to:
   /// **'Garage'**
   String get garageTitle;
+
+  /// No description provided for @garageTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Garage'**
+  String get garageTab;
 
   /// No description provided for @wardrobeTitle.
   ///
@@ -146,11 +167,23 @@ abstract class AppLocalizations {
   /// **'Wardrobe'**
   String get wardrobeTitle;
 
+  /// No description provided for @wardrobeTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Gear'**
+  String get wardrobeTab;
+
   /// No description provided for @insightsTitle.
   ///
   /// In en, this message translates to:
   /// **'Insights'**
   String get insightsTitle;
+
+  /// No description provided for @insightsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insightsTab;
 
   /// No description provided for @settingsTitle.
   ///
@@ -554,6 +587,18 @@ abstract class AppLocalizations {
   /// **'Handlebar tape'**
   String get componentTypeBarTape;
 
+  /// No description provided for @componentTypePedals.
+  ///
+  /// In en, this message translates to:
+  /// **'Pedals'**
+  String get componentTypePedals;
+
+  /// No description provided for @componentTypeSaddle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saddle'**
+  String get componentTypeSaddle;
+
   /// No description provided for @componentTypeOther.
   ///
   /// In en, this message translates to:
@@ -848,6 +893,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get languageTitle;
 
+  /// No description provided for @languageProOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional languages available with PROS.TO Pro.'**
+  String get languageProOnlyHint;
+
   /// No description provided for @currencyTitle.
   ///
   /// In en, this message translates to:
@@ -1117,6 +1168,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ukrainian'**
   String get languageUkrainian;
+
+  /// No description provided for @languageSpanish.
+  ///
+  /// In en, this message translates to:
+  /// **'Spanish'**
+  String get languageSpanish;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get languageFrench;
+
+  /// No description provided for @languageItalian.
+  ///
+  /// In en, this message translates to:
+  /// **'Italian'**
+  String get languageItalian;
+
+  /// No description provided for @languageChinese.
+  ///
+  /// In en, this message translates to:
+  /// **'Chinese (Simplified)'**
+  String get languageChinese;
 
   /// No description provided for @biometricToggleTitle.
   ///
@@ -1411,20 +1486,46 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'uk'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+        'en',
+        'es',
+        'fr',
+        'it',
+        'uk',
+        'zh'
+      ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when language+script codes are specified.
+  switch (locale.languageCode) {
+    case 'zh':
+      {
+        switch (locale.scriptCode) {
+          case 'Hans':
+            return AppLocalizationsZhHans();
+        }
+        break;
+      }
+  }
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'it':
+      return AppLocalizationsIt();
     case 'uk':
       return AppLocalizationsUk();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(
